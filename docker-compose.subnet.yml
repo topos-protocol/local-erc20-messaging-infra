@@ -1,0 +1,141 @@
+version: "3.3"
+services:
+  # Get ConstAddressDeployer compiled contract (JSON file)
+  contracts-init:
+    image: ghcr.io/toposware/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
+    container_name: contracts-init
+    init: true
+    volumes:
+      - contracts:/usr/src/app/brownie/build/contracts
+
+  # Create keys and genesis
+  init:
+    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: init
+    init: true
+    command: ["init"]
+    environment:
+      - CHAIN_ID=${CHAIN_ID}
+    volumes:
+      - node-1:/polygon-edge/data-1
+      - node-2:/polygon-edge/data-2
+      - node-3:/polygon-edge/data-3
+      - node-4:/polygon-edge/data-4
+      - genesis:/genesis
+      - contracts:/contracts
+
+  node-1:
+    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: node-1
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data"
+      - "--chain"
+      - "/genesis/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--seal"
+    depends_on:
+      - init
+    volumes:
+      - node-1:/data
+      - genesis:/genesis
+    restart: on-failure
+
+  node-2:
+    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: node-2
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data"
+      - "--chain"
+      - "/genesis/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--seal"
+    depends_on:
+      - init
+    volumes:
+      - node-2:/data
+      - genesis:/genesis
+    restart: on-failure
+
+  node-3:
+    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: node-3
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data"
+      - "--chain"
+      - "/genesis/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--seal"
+    depends_on:
+      - init
+    volumes:
+      - node-3:/data
+      - genesis:/genesis
+    restart: on-failure
+
+  node-4:
+    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: node-4
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data"
+      - "--chain"
+      - "/genesis/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--seal"
+    depends_on:
+      - init
+    volumes:
+      - node-4:/data
+      - genesis:/genesis
+    restart: on-failure
+
+  contracts:
+    image: ghcr.io/toposware/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
+    container_name: contracts
+    init: true
+    environment:
+      - PRIVATE_KEY=${PRIVATE_KEY}
+      - TOKEN_DEPLOYER_SALT=${TOKEN_DEPLOYER_SALT}
+      - TOPOS_CORE_SALT=${TOPOS_CORE_SALT}
+    command: bash -c "npm run deploy2:topos-msg-protocol http://node-1:8545"
+    depends_on:
+      - node-1
+
+volumes:
+  contracts:
+  genesis:
+  node-1:
+  node-2:
+  node-3:
+  node-4:
