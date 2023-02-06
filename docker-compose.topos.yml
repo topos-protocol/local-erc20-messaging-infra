@@ -119,6 +119,8 @@ services:
     volumes:
       - node-1:/data
     depends_on:
+      boot:
+        condition: service_started
       contracts:
         condition: service_completed_successfully
     environment:
