@@ -1,25 +1,25 @@
 version: "3.3"
 services:
   # Create keys and genesis
-  edena-init:
+  topos-init:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: edena-init
+    container_name: topos-init
     init: true
     command: ["init"]
     environment:
-      - CHAIN_ID=${EDENA_CHAIN_ID}
-      - BOOTNODE_DOMAIN_NAME=edena-node-1
+      - CHAIN_ID=${TOPOS_CHAIN_ID}
+      - BOOTNODE_DOMAIN_NAME=topos-node-1
     volumes:
-      - edena-node-1:/polygon-edge/data-1
-      - edena-node-2:/polygon-edge/data-2
-      - edena-node-3:/polygon-edge/data-3
-      - edena-node-4:/polygon-edge/data-4
-      - edena-genesis:/genesis
+      - topos-node-1:/polygon-edge/data-1
+      - topos-node-2:/polygon-edge/data-2
+      - topos-node-3:/polygon-edge/data-3
+      - topos-node-4:/polygon-edge/data-4
+      - topos-genesis:/genesis
       - contracts:/contracts
 
-  edena-node-1:
+  topos-node-1:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: edena-node-1
+    container_name: topos-node-1
     init: true
     command:
       - "server"
@@ -35,17 +35,17 @@ services:
       - "0.0.0.0:8545"
       - "--seal"
     depends_on:
-      - edena-init
+      - topos-init
     volumes:
-      - edena-node-1:/data
-      - edena-genesis:/genesis
+      - topos-node-1:/data
+      - topos-genesis:/genesis
     restart: on-failure
     ports:
-      - "30002:8545"
+      - "10002:8545"
 
-  edena-node-2:
+  topos-node-2:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: edena-node-2
+    container_name: topos-node-2
     init: true
     command:
       - "server"
@@ -61,15 +61,15 @@ services:
       - "0.0.0.0:8545"
       - "--seal"
     depends_on:
-      - edena-init
+      - topos-init
     volumes:
-      - edena-node-2:/data
-      - edena-genesis:/genesis
+      - topos-node-2:/data
+      - topos-genesis:/genesis
     restart: on-failure
 
-  edena-node-3:
+  topos-node-3:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: edena-node-3
+    container_name: topos-node-3
     init: true
     command:
       - "server"
@@ -85,15 +85,15 @@ services:
       - "0.0.0.0:8545"
       - "--seal"
     depends_on:
-      - edena-init
+      - topos-init
     volumes:
-      - edena-node-3:/data
-      - edena-genesis:/genesis
+      - topos-node-3:/data
+      - topos-genesis:/genesis
     restart: on-failure
 
-  edena-node-4:
+  topos-node-4:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: edena-node-4
+    container_name: topos-node-4
     init: true
     command:
       - "server"
@@ -109,22 +109,22 @@ services:
       - "0.0.0.0:8545"
       - "--seal"
     depends_on:
-      - edena-init
+      - topos-init
     volumes:
-      - edena-node-4:/data
-      - edena-genesis:/genesis
+      - topos-node-4:/data
+      - topos-genesis:/genesis
     restart: on-failure
 
-  edena-sequencer:
+  topos-sequencer:
     image: ghcr.io/toposware/topos:${TOPOS_VERSION}
-    container_name: edena-sequencer
+    container_name: topos-sequencer
     init: true
     command:
       - "boot"
       - "sequencer"
       - "run"
     volumes:
-      - edena-node-1:/data
+      - topos-node-1:/data
     depends_on:
       tce-boot:
         condition: service_started
@@ -134,15 +134,15 @@ services:
       - RUST_LOG=info,topos=debug
       - TOOLCHAIN_VERSION=stable
       - RUST_BACKTRACE=full
-      - TOPOS_LOCAL_SUBNET_ID=${EDENA_SUBNET_ID}
-      - SUBNET_JSONRPC_ENDPOINT=edena-node-1:8545
+      - TOPOS_LOCAL_SUBNET_ID=${TOPOS_SUBNET_ID}
+      - SUBNET_JSONRPC_ENDPOINT=topos-node-1:8545
       - SUBNET_CONTRACT_ADDRESS=${TOPOS_CORE_CONTRACT_ADDRESS}
       - TOPOS_LOCAL_SUBNET_DATA_DIR=/data
-      - TOPOS_BASE_TCE_API_URL=http://infra-tce-peer-3:1340
+      - TOPOS_BASE_TCE_API_URL=http://infra-tce-peer-1:1340
 
 volumes:
-  edena-genesis:
-  edena-node-1:
-  edena-node-2:
-  edena-node-3:
-  edena-node-4:
+  topos-genesis:
+  topos-node-1:
+  topos-node-2:
+  topos-node-3:
+  topos-node-4:

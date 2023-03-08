@@ -16,8 +16,15 @@ services:
       - PRIVATE_KEY=${PRIVATE_KEY}
       - TOKEN_DEPLOYER_SALT=${TOKEN_DEPLOYER_SALT}
       - TOPOS_CORE_SALT=${TOPOS_CORE_SALT}
-    command: bash -c "npm run deploy2:topos-msg-protocol http://incal-node-1:8545 && npm run deploy2:topos-msg-protocol http://edena-node-1:8545"
+      - SUBNET_REGISTRATOR_SALT=${SUBNET_REGISTRATOR_SALT}
+    command: bash -c "
+      npm run deploy2:topos-msg-protocol http://topos-node-1:8545 &&
+      npm run deploy2 http://topos-node-1:8545 brownie/build/contracts/SubnetRegistrator.json $SUBNET_REGISTRATOR_SALT &&
+      npm run deploy2:topos-msg-protocol http://incal-node-1:8545 &&
+      npm run deploy2:topos-msg-protocol http://edena-node-1:8545
+      "
     depends_on:
+      - topos-node-1
       - incal-node-1
       - edena-node-1
 
