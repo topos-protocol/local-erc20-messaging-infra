@@ -58,7 +58,7 @@ services:
       - TCE_DB_PATH=/tmp/default-db
       - TCE_API_ADDR=0.0.0.0:1340
       - TCE_LOCAL_KS=1 # 12D3KooWRhFCXBhmsMnur3up3vJsDoqWh4c39PKXgSWwzAzDHNLn
-      - TCE_JAEGER_SERVICE_NAME=tce-boot-node
+      - TCE_JAEGER_SERVICE_NAME=local-tce-boot-node
       - TCE_JAEGER_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com
       - TCE_ECHO_SAMPLE_SIZE=6
       - TCE_READY_SAMPLE_SIZE=6
@@ -93,7 +93,7 @@ services:
       - RUST_LOG=info,topos=debug
       - TCE_DB_PATH=/tmp/default-db
       - TCE_API_ADDR=0.0.0.0:1340
-      - TCE_JAEGER_SERVICE_NAME=tce-regular-node
+      - TCE_JAEGER_SERVICE_NAME=local-tce-peer-node
       - TCE_JAEGER_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com
       # Boot peers are injected by init.sh
       # - TCE_BOOT_PEERS=12D3KooWRhFCXBhmsMnur3up3vJsDoqWh4c39PKXgSWwzAzDHNLn /dns4/boot/tcp/9090
