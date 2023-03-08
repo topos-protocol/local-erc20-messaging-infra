@@ -1,0 +1,148 @@
+version: "3.3"
+services:
+  # Create keys and genesis
+  topos-init:
+    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: topos-init
+    init: true
+    command: ["init"]
+    environment:
+      - CHAIN_ID=${TOPOS_CHAIN_ID}
+      - BOOTNODE_DOMAIN_NAME=topos-node-1
+    volumes:
+      - topos-node-1:/polygon-edge/data-1
+      - topos-node-2:/polygon-edge/data-2
+      - topos-node-3:/polygon-edge/data-3
+      - topos-node-4:/polygon-edge/data-4
+      - topos-genesis:/genesis
+      - contracts:/contracts
+
+  topos-node-1:
+    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: topos-node-1
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data"
+      - "--chain"
+      - "/genesis/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--seal"
+    depends_on:
+      - topos-init
+    volumes:
+      - topos-node-1:/data
+      - topos-genesis:/genesis
+    restart: on-failure
+    ports:
+      - "10002:8545"
+
+  topos-node-2:
+    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: topos-node-2
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data"
+      - "--chain"
+      - "/genesis/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--seal"
+    depends_on:
+      - topos-init
+    volumes:
+      - topos-node-2:/data
+      - topos-genesis:/genesis
+    restart: on-failure
+
+  topos-node-3:
+    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: topos-node-3
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data"
+      - "--chain"
+      - "/genesis/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--seal"
+    depends_on:
+      - topos-init
+    volumes:
+      - topos-node-3:/data
+      - topos-genesis:/genesis
+    restart: on-failure
+
+  topos-node-4:
+    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: topos-node-4
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data"
+      - "--chain"
+      - "/genesis/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--seal"
+    depends_on:
+      - topos-init
+    volumes:
+      - topos-node-4:/data
+      - topos-genesis:/genesis
+    restart: on-failure
+
+  topos-sequencer:
+    image: ghcr.io/toposware/topos:${TOPOS_VERSION}
+    container_name: topos-sequencer
+    init: true
+    command:
+      - "boot"
+      - "sequencer"
+      - "run"
+    volumes:
+      - topos-node-1:/data
+    depends_on:
+      tce-boot:
+        condition: service_started
+      contracts:
+        condition: service_completed_successfully
+    environment:
+      - RUST_LOG=info,topos=debug
+      - TOOLCHAIN_VERSION=stable
+      - RUST_BACKTRACE=full
+      - TOPOS_LOCAL_SUBNET_ID=${TOPOS_SUBNET_ID}
+      - SUBNET_JSONRPC_ENDPOINT=topos-node-1:8545
+      - SUBNET_CONTRACT_ADDRESS=${TOPOS_CORE_CONTRACT_ADDRESS}
+      - TOPOS_LOCAL_SUBNET_DATA_DIR=/data
+      - TOPOS_BASE_TCE_API_URL=http://infra-tce-peer-1:1340
+
+volumes:
+  topos-genesis:
+  topos-node-1:
+  topos-node-2:
+  topos-node-3:
+  topos-node-4:

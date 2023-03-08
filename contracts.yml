@@ -1,0 +1,32 @@
+version: "3.3"
+services:
+  # Get ConstAddressDeployer compiled contract (JSON file)
+  contracts-init:
+    image: ghcr.io/toposware/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
+    container_name: contracts-init
+    init: true
+    volumes:
+      - contracts:/usr/src/app/brownie/build/contracts
+
+  contracts:
+    image: ghcr.io/toposware/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
+    container_name: contracts
+    init: true
+    environment:
+      - PRIVATE_KEY=${PRIVATE_KEY}
+      - TOKEN_DEPLOYER_SALT=${TOKEN_DEPLOYER_SALT}
+      - TOPOS_CORE_SALT=${TOPOS_CORE_SALT}
+      - SUBNET_REGISTRATOR_SALT=${SUBNET_REGISTRATOR_SALT}
+    command: bash -c "
+      npm run deploy2:topos-msg-protocol http://topos-node-1:8545 &&
+      npm run deploy2 http://topos-node-1:8545 brownie/build/contracts/SubnetRegistrator.json $SUBNET_REGISTRATOR_SALT &&
+      npm run deploy2:topos-msg-protocol http://incal-node-1:8545 &&
+      npm run deploy2:topos-msg-protocol http://edena-node-1:8545
+      "
+    depends_on:
+      - topos-node-1
+      - incal-node-1
+      - edena-node-1
+
+volumes:
+  contracts:

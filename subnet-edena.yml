@@ -1,32 +1,25 @@
 version: "3.3"
 services:
-  # Get ConstAddressDeployer compiled contract (JSON file)
-  contracts-init:
-    image: ghcr.io/toposware/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
-    container_name: contracts-init
-    init: true
-    volumes:
-      - contracts:/usr/src/app/brownie/build/contracts
-
   # Create keys and genesis
-  init:
+  edena-init:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: init
+    container_name: edena-init
     init: true
     command: ["init"]
     environment:
-      - CHAIN_ID=${CHAIN_ID}
+      - CHAIN_ID=${EDENA_CHAIN_ID}
+      - BOOTNODE_DOMAIN_NAME=edena-node-1
     volumes:
-      - node-1:/polygon-edge/data-1
-      - node-2:/polygon-edge/data-2
-      - node-3:/polygon-edge/data-3
-      - node-4:/polygon-edge/data-4
-      - genesis:/genesis
+      - edena-node-1:/polygon-edge/data-1
+      - edena-node-2:/polygon-edge/data-2
+      - edena-node-3:/polygon-edge/data-3
+      - edena-node-4:/polygon-edge/data-4
+      - edena-genesis:/genesis
       - contracts:/contracts
 
-  node-1:
+  edena-node-1:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: node-1
+    container_name: edena-node-1
     init: true
     command:
       - "server"
@@ -42,15 +35,17 @@ services:
       - "0.0.0.0:8545"
       - "--seal"
     depends_on:
-      - init
+      - edena-init
     volumes:
-      - node-1:/data
-      - genesis:/genesis
+      - edena-node-1:/data
+      - edena-genesis:/genesis
     restart: on-failure
+    ports:
+      - "30002:8545"
 
-  node-2:
+  edena-node-2:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: node-2
+    container_name: edena-node-2
     init: true
     command:
       - "server"
@@ -66,15 +61,15 @@ services:
       - "0.0.0.0:8545"
       - "--seal"
     depends_on:
-      - init
+      - edena-init
     volumes:
-      - node-2:/data
-      - genesis:/genesis
+      - edena-node-2:/data
+      - edena-genesis:/genesis
     restart: on-failure
 
-  node-3:
+  edena-node-3:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: node-3
+    container_name: edena-node-3
     init: true
     command:
       - "server"
@@ -90,15 +85,15 @@ services:
       - "0.0.0.0:8545"
       - "--seal"
     depends_on:
-      - init
+      - edena-init
     volumes:
-      - node-3:/data
-      - genesis:/genesis
+      - edena-node-3:/data
+      - edena-genesis:/genesis
     restart: on-failure
 
-  node-4:
+  edena-node-4:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: node-4
+    container_name: edena-node-4
     init: true
     command:
       - "server"
@@ -114,28 +109,40 @@ services:
       - "0.0.0.0:8545"
       - "--seal"
     depends_on:
-      - init
+      - edena-init
     volumes:
-      - node-4:/data
-      - genesis:/genesis
+      - edena-node-4:/data
+      - edena-genesis:/genesis
     restart: on-failure
 
-  contracts:
-    image: ghcr.io/toposware/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
-    container_name: contracts
+  edena-sequencer:
+    image: ghcr.io/toposware/topos:${TOPOS_VERSION}
+    container_name: edena-sequencer
     init: true
+    command:
+      - "boot"
+      - "sequencer"
+      - "run"
+    volumes:
+      - edena-node-1:/data
+    depends_on:
+      tce-boot:
+        condition: service_started
+      contracts:
+        condition: service_completed_successfully
     environment:
-      - PRIVATE_KEY=${PRIVATE_KEY}
-      - TOKEN_DEPLOYER_SALT=${TOKEN_DEPLOYER_SALT}
-      - TOPOS_CORE_SALT=${TOPOS_CORE_SALT}
-    command: bash -c "npm run deploy2:topos-msg-protocol http://node-1:8545"
-    depends_on:
-      - node-1
+      - RUST_LOG=info,topos=debug
+      - TOOLCHAIN_VERSION=stable
+      - RUST_BACKTRACE=full
+      - TOPOS_LOCAL_SUBNET_ID=${EDENA_SUBNET_ID}
+      - SUBNET_JSONRPC_ENDPOINT=edena-node-1:8545
+      - SUBNET_CONTRACT_ADDRESS=${TOPOS_CORE_CONTRACT_ADDRESS}
+      - TOPOS_LOCAL_SUBNET_DATA_DIR=/data
+      - TOPOS_BASE_TCE_API_URL=http://infra-tce-peer-3:1340
 
 volumes:
-  contracts:
-  genesis:
-  node-1:
-  node-2:
-  node-3:
-  node-4:
+  edena-genesis:
+  edena-node-1:
+  edena-node-2:
+  edena-node-3:
+  edena-node-4:
