@@ -40,6 +40,10 @@ services:
       - incal-node-1:/data
       - incal-genesis:/genesis
     restart: on-failure
+    ports:
+      - "10002:8545"
+    expose:
+      - "10002"
 
   incal-node-2:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}

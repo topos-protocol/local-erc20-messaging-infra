@@ -40,6 +40,10 @@ services:
       - edena-node-1:/data
       - edena-genesis:/genesis
     restart: on-failure
+    ports:
+      - "20002:8545"
+    expose:
+      - "20002"
 
   edena-node-2:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
