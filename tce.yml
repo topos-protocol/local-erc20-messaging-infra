@@ -1,38 +1,38 @@
 services:
-  jaeger:
-    image: jaegertracing/all-in-one:latest
-    init: true
-    restart: always
-    ports:
-      - "16686:16686"
-      - "14250:14250"
-      - "16685:16685"
+  # jaeger:
+  #   image: jaegertracing/all-in-one:latest
+  #   init: true
+  #   restart: always
+  #   ports:
+  #     - "16686:16686"
+  #     - "14250:14250"
+  #     - "16685:16685"
 
-  otel-collector:
-    image: otel/opentelemetry-collector-contrib-dev:latest
-    init: true
-    restart: always
-    command: ["--config=/etc/otel-collector-config.yaml"]
-    volumes:
-      - ./config/otel-collector-config.yaml:/etc/otel-collector-config.yaml
-    ports:
-      - "1888:1888" # pprof extension
-      - "8888:8888" # Prometheus metrics exposed by the collector
-      - "8889:8889" # Prometheus exporter metrics
-      - "13133:13133" # health_check extension
-      - "4317:4317" # OTLP gRPC receiver
-      - "55679:55679" # zpages extension
-    depends_on:
-      - jaeger
+  # otel-collector:
+  #   image: otel/opentelemetry-collector-contrib-dev:latest
+  #   init: true
+  #   restart: always
+  #   command: ["--config=/etc/otel-collector-config.yaml"]
+  #   volumes:
+  #     - ./config/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+  #   ports:
+  #     - "1888:1888" # pprof extension
+  #     - "8888:8888" # Prometheus metrics exposed by the collector
+  #     - "8889:8889" # Prometheus exporter metrics
+  #     - "13133:13133" # health_check extension
+  #     - "4317:4317" # OTLP gRPC receiver
+  #     - "55679:55679" # zpages extension
+  #   depends_on:
+  #     - jaeger
 
-  prometheus:
-    image: prom/prometheus:latest
-    init: true
-    restart: always
-    volumes:
-      - ./config/prometheus.yaml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   init: true
+  #   restart: always
+  #   volumes:
+  #     - ./config/prometheus.yaml:/etc/prometheus/prometheus.yml
+  #   ports:
+  #     - "9090:9090"
 
   tce-boot:
     image: ghcr.io/toposware/topos:${TOPOS_VERSION}
@@ -46,8 +46,8 @@ services:
       interval: 15s
     volumes:
       - shared:/tmp/shared
-    depends_on:
-      - otel-collector
+    # depends_on:
+    #   - otel-collector
     ports:
       - "9090"
       - "1340:1340"
@@ -59,7 +59,7 @@ services:
       - TCE_API_ADDR=0.0.0.0:1340
       - TCE_LOCAL_KS=1 # 12D3KooWRhFCXBhmsMnur3up3vJsDoqWh4c39PKXgSWwzAzDHNLn
       - TCE_JAEGER_SERVICE_NAME=tce-boot-node
-      - TCE_JAEGER_AGENT=http://otel-collector:4317
+      - TCE_JAEGER_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com
       - TCE_ECHO_SAMPLE_SIZE=6
       - TCE_READY_SAMPLE_SIZE=6
       - TCE_DELIVERY_SAMPLE_SIZE=6
@@ -79,8 +79,8 @@ services:
     volumes:
       - shared:/tmp/shared
     depends_on:
-      jaeger:
-        condition: service_started
+      # jaeger:
+      #   condition: service_started
       tce-boot:
         condition: service_started
     ports:
@@ -94,7 +94,7 @@ services:
       - TCE_DB_PATH=/tmp/default-db
       - TCE_API_ADDR=0.0.0.0:1340
       - TCE_JAEGER_SERVICE_NAME=tce-regular-node
-      - TCE_JAEGER_AGENT=http://otel-collector:4317
+      - TCE_JAEGER_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com
       # Boot peers are injected by init.sh
       # - TCE_BOOT_PEERS=12D3KooWRhFCXBhmsMnur3up3vJsDoqWh4c39PKXgSWwzAzDHNLn /dns4/boot/tcp/9090
       - TCE_ECHO_SAMPLE_SIZE=6
