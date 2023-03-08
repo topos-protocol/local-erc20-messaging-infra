@@ -3,14 +3,12 @@ services:
   # Get ConstAddressDeployer compiled contract (JSON file)
   contracts-init:
     image: ghcr.io/toposware/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
-    container_name: edena-contracts-init
     init: true
     volumes:
       - contracts:/usr/src/app/brownie/build/contracts
 
   contracts:
     image: ghcr.io/toposware/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
-    container_name: contracts
     init: true
     environment:
       - PRIVATE_KEY=${PRIVATE_KEY}

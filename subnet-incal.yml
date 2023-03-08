@@ -3,7 +3,6 @@ services:
   # Create keys and genesis
   incal-init:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: incal-init
     init: true
     command: ["init"]
     environment:
@@ -19,7 +18,6 @@ services:
 
   incal-node-1:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: incal-node-1
     init: true
     command:
       - "server"
@@ -47,7 +45,6 @@ services:
 
   incal-node-2:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: incal-node-2
     init: true
     command:
       - "server"
@@ -71,7 +68,6 @@ services:
 
   incal-node-3:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: incal-node-3
     init: true
     command:
       - "server"
@@ -95,7 +91,6 @@ services:
 
   incal-node-4:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
-    container_name: incal-node-4
     init: true
     command:
       - "server"
@@ -119,7 +114,6 @@ services:
 
   incal-sequencer:
     image: ghcr.io/toposware/topos:${TOPOS_VERSION}
-    container_name: incal-sequencer
     init: true
     command:
       - "boot"
@@ -128,7 +122,7 @@ services:
     volumes:
       - incal-node-1:/data
     depends_on:
-      boot:
+      tce-boot:
         condition: service_started
       contracts:
         condition: service_completed_successfully

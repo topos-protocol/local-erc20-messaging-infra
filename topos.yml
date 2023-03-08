@@ -1,7 +1,6 @@
 services:
   jaeger:
     image: jaegertracing/all-in-one:latest
-    container_name: jaeger
     init: true
     restart: always
     ports:
@@ -11,7 +10,6 @@ services:
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib-dev:latest
-    container_name: otel-collector
     init: true
     restart: always
     command: ["--config=/etc/otel-collector-config.yaml"]
@@ -29,7 +27,6 @@ services:
 
   prometheus:
     image: prom/prometheus:latest
-    container_name: prometheus
     init: true
     restart: always
     volumes:
@@ -37,9 +34,8 @@ services:
     ports:
       - "9090:9090"
 
-  boot:
+  tce-boot:
     image: ghcr.io/toposware/topos:${TOPOS_VERSION}
-    container_name: boot
     init: true
     command:
       - "boot"
@@ -71,7 +67,7 @@ services:
       - TCE_READY_THRESHOLD=2
       - TCE_DELIVERY_THRESHOLD=2
 
-  peer:
+  tce-peer:
     image: ghcr.io/toposware/topos:${TOPOS_VERSION}
     command:
       - "tce"
@@ -85,7 +81,7 @@ services:
     depends_on:
       jaeger:
         condition: service_started
-      boot:
+      tce-boot:
         condition: service_started
     ports:
       - "9090"
