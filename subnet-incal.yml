@@ -3,6 +3,7 @@ services:
   # Create keys and genesis
   incal-init:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: incal-init
     init: true
     command: ["init"]
     environment:
@@ -18,6 +19,7 @@ services:
 
   incal-node-1:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: incal-node-1
     init: true
     command:
       - "server"
@@ -40,11 +42,10 @@ services:
     restart: on-failure
     ports:
       - "10002:8545"
-    expose:
-      - "10002"
 
   incal-node-2:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: incal-node-2
     init: true
     command:
       - "server"
@@ -68,6 +69,7 @@ services:
 
   incal-node-3:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: incal-node-3
     init: true
     command:
       - "server"
@@ -91,6 +93,7 @@ services:
 
   incal-node-4:
     image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    container_name: incal-node-4
     init: true
     command:
       - "server"
@@ -114,6 +117,7 @@ services:
 
   incal-sequencer:
     image: ghcr.io/toposware/topos:${TOPOS_VERSION}
+    container_name: incal-sequencer
     init: true
     command:
       - "boot"
@@ -134,7 +138,7 @@ services:
       - SUBNET_JSONRPC_ENDPOINT=incal-node-1:8545
       - SUBNET_CONTRACT_ADDRESS=${TOPOS_CORE_CONTRACT_ADDRESS}
       - TOPOS_LOCAL_SUBNET_DATA_DIR=/data
-      - TOPOS_BASE_TCE_API_URL=http://boot:1340
+      - TOPOS_BASE_TCE_API_URL=http://tce-boot:1340
 
 volumes:
   incal-genesis:
