@@ -2,7 +2,7 @@ version: "3.3"
 services:
   # Create keys and genesis
   incal-init:
-    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    image: ghcr.io/topos-network/polygon-edge:${TOPOSWARE_EDGE_VERSION}
     container_name: incal-init
     init: true
     command: ["init"]
@@ -21,7 +21,7 @@ services:
       - contracts:/contracts
 
   incal-node-1:
-    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    image: ghcr.io/topos-network/polygon-edge:${TOPOSWARE_EDGE_VERSION}
     container_name: incal-node-1
     init: true
     command:
@@ -48,7 +48,7 @@ services:
       - "20002:8545"
 
   incal-node-2:
-    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    image: ghcr.io/topos-network/polygon-edge:${TOPOSWARE_EDGE_VERSION}
     container_name: incal-node-2
     init: true
     command:
@@ -73,7 +73,7 @@ services:
     restart: on-failure
 
   incal-node-3:
-    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    image: ghcr.io/topos-network/polygon-edge:${TOPOSWARE_EDGE_VERSION}
     container_name: incal-node-3
     init: true
     command:
@@ -98,7 +98,7 @@ services:
     restart: on-failure
 
   incal-node-4:
-    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    image: ghcr.io/topos-network/polygon-edge:${TOPOSWARE_EDGE_VERSION}
     container_name: incal-node-4
     init: true
     command:

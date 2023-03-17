@@ -2,7 +2,7 @@ version: "3.3"
 services:
   # Create keys and genesis
   topos-init:
-    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    image: ghcr.io/topos-network/polygon-edge:${TOPOSWARE_EDGE_VERSION}
     container_name: topos-init
     init: true
     command: ["init"]
@@ -21,7 +21,7 @@ services:
       - contracts:/contracts
 
   topos-node-1:
-    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    image: ghcr.io/topos-network/polygon-edge:${TOPOSWARE_EDGE_VERSION}
     container_name: topos-node-1
     init: true
     command:
@@ -48,7 +48,7 @@ services:
       - "10002:8545"
 
   topos-node-2:
-    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    image: ghcr.io/topos-network/polygon-edge:${TOPOSWARE_EDGE_VERSION}
     container_name: topos-node-2
     init: true
     command:
@@ -73,7 +73,7 @@ services:
     restart: on-failure
 
   topos-node-3:
-    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    image: ghcr.io/topos-network/polygon-edge:${TOPOSWARE_EDGE_VERSION}
     container_name: topos-node-3
     init: true
     command:
@@ -98,7 +98,7 @@ services:
     restart: on-failure
 
   topos-node-4:
-    image: ghcr.io/toposware/polygon-edge:${TOPOSWARE_EDGE_VERSION}
+    image: ghcr.io/topos-network/polygon-edge:${TOPOSWARE_EDGE_VERSION}
     container_name: topos-node-4
     init: true
     command:

@@ -42,7 +42,7 @@ docker compose up -d
 
 A few environment variables are editable from the `.env` file found on the root of this repository.
 
-- `TOPOSWARE_EDGE_VERSION`: `toposware/polygon-edge`'s version
+- `TOPOSWARE_EDGE_VERSION`: `topos-network/polygon-edge`'s version
 - `TOPOS_VERSION`: `toposware/topos`'s version
 - `TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION`: `toposware/topos-smart-contracts`'s version
 - `TOPOS_CORE_CONTRACT_ADDRESS`: `ToposCore` contract's address
