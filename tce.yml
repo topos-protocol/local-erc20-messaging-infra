@@ -1,6 +1,6 @@
 services:
   tce-boot:
-    image: ghcr.io/toposware/topos:${TOPOS_VERSION}
+    image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
     init: true
     command:
       - "boot"
@@ -31,7 +31,7 @@ services:
       - TCE_DELIVERY_THRESHOLD=2
 
   tce-peer:
-    image: ghcr.io/toposware/topos:${TOPOS_VERSION}
+    image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
     command:
       - "tce"
       - "run"
