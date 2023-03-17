@@ -19,6 +19,7 @@ services:
       - TOPOS_CORE_PROXY_SALT=${TOPOS_CORE_PROXY_SALT}
       - SUBNET_REGISTRATOR_SALT=${SUBNET_REGISTRATOR_SALT}
     command: bash -c "
+      sleep 15 &&
       npm run deploy2:topos-msg-protocol http://topos-node-1:8545 $$(cat /data/topos/consensus/validator.key) &&
       npm run deploy2 http://topos-node-1:8545 brownie/build/contracts/SubnetRegistrator.json $SUBNET_REGISTRATOR_SALT &&
       npm run deploy2:topos-msg-protocol http://incal-node-1:8545 $$(cat /data/incal/consensus/validator.key) &&
