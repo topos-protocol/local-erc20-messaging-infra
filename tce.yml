@@ -33,6 +33,7 @@ services:
   tce-peer:
     image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
     command:
+      - "peer"
       - "tce"
       - "run"
     init: true
