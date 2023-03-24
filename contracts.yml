@@ -19,16 +19,16 @@ services:
       - TOPOS_CORE_PROXY_SALT=${TOPOS_CORE_PROXY_SALT}
       - SUBNET_REGISTRATOR_SALT=${SUBNET_REGISTRATOR_SALT}
     command: bash -c "
-      sleep 15 &&
-      npm run deploy2:topos-msg-protocol http://topos-node-1:8545 $$(cat /data/topos/consensus/validator.key) &&
+      sleep 20 &&
+      npm run deploy2:topos-msg-protocol http://topos-node-1:8545 $$(cat /data/topos/data-1/consensus/validator.key) &&
       npm run deploy2 http://topos-node-1:8545 brownie/build/contracts/SubnetRegistrator.json $SUBNET_REGISTRATOR_SALT &&
-      npm run deploy2:topos-msg-protocol http://incal-node-1:8545 $$(cat /data/incal/consensus/validator.key) &&
-      npm run deploy2:topos-msg-protocol http://edena-node-1:8545 $$(cat /data/edena/consensus/validator.key)
+      npm run deploy2:topos-msg-protocol http://incal-node-1:8545 $$(cat /data/incal/data-1/consensus/validator.key) &&
+      npm run deploy2:topos-msg-protocol http://edena-node-1:8545 $$(cat /data/edena/data-1/consensus/validator.key)
       "
     volumes:
-      - topos-node-1:/data/topos
-      - incal-node-1:/data/incal
-      - edena-node-1:/data/edena
+      - topos-data:/data/topos
+      - incal-data:/data/incal
+      - edena-data:/data/edena
     depends_on:
       - topos-node-1
       - incal-node-1
