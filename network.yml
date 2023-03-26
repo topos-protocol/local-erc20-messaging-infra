@@ -1,0 +1,5 @@
+version: "3.3"
+networks:
+  full-msg-protocol-infra-docker:
+    driver: bridge
+    name: full-msg-protocol-infra-docker
