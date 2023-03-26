@@ -15,6 +15,8 @@ services:
     volumes:
       - edena-data:/data
       - contracts:/contracts
+    networks:
+      - full-msg-protocol-infra-docker
 
   edena-node-1:
     image: ghcr.io/topos-network/polygon-edge:${TOPOSWARE_EDGE_VERSION}
@@ -33,6 +35,10 @@ services:
       - "--jsonrpc"
       - "0.0.0.0:8545"
       - "--seal"
+    healthcheck:
+      test: ./polygon-edge status | awk '/Number/ {print $$NF}' | tr -d '\n' | grep -v -w "0"
+      interval: 5s
+      retries: 10
     depends_on:
       edena-init:
         condition: service_completed_successfully
@@ -41,6 +47,8 @@ services:
     restart: on-failure
     ports:
       - "30002:8545"
+    networks:
+      - full-msg-protocol-infra-docker
 
   edena-node-2:
     image: ghcr.io/topos-network/polygon-edge:${TOPOSWARE_EDGE_VERSION}
@@ -65,6 +73,8 @@ services:
     volumes:
       - edena-data:/data
     restart: on-failure
+    networks:
+      - full-msg-protocol-infra-docker
 
   edena-node-3:
     image: ghcr.io/topos-network/polygon-edge:${TOPOSWARE_EDGE_VERSION}
@@ -89,6 +99,8 @@ services:
     volumes:
       - edena-data:/data
     restart: on-failure
+    networks:
+      - full-msg-protocol-infra-docker
 
   edena-node-4:
     image: ghcr.io/topos-network/polygon-edge:${TOPOSWARE_EDGE_VERSION}
@@ -113,6 +125,8 @@ services:
     volumes:
       - edena-data:/data
     restart: on-failure
+    networks:
+      - full-msg-protocol-infra-docker
 
   edena-sequencer:
     image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
@@ -127,7 +141,7 @@ services:
     depends_on:
       tce-boot:
         condition: service_started
-      contracts:
+      contracts-edena:
         condition: service_completed_successfully
     environment:
       - RUST_LOG=info,topos=debug
@@ -138,7 +152,9 @@ services:
       - TOPOS_LOCAL_SUBNET_DATA_DIR=/data/data-1
       - TOPOS_BASE_TCE_API_URL=http://infra-tce-peer-1:1340
       - TOPOS_OTLP_SERVICE_NAME=local-edena-sequencer
-      - TOPOS_OTLP_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com            
+      - TOPOS_OTLP_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com
+    networks:
+      - full-msg-protocol-infra-docker
 
 volumes:
   edena-data:
