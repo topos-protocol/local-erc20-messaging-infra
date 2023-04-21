@@ -6,7 +6,7 @@ services:
     container_name: contracts-init
     init: true
     volumes:
-      - contracts:/usr/src/app/brownie/build/contracts
+      - contracts:/usr/src/app/artifacts/contracts
     networks:
       - full-msg-protocol-infra-docker
 
@@ -21,8 +21,8 @@ services:
       - TOPOS_CORE_PROXY_SALT=${TOPOS_CORE_PROXY_SALT}
       - SUBNET_REGISTRATOR_SALT=${SUBNET_REGISTRATOR_SALT}
     command: bash -c "
-      npm run deploy2:topos-msg-protocol http://topos-node-1:8545 $$(cat /data/topos/data-1/consensus/validator.key) &&
-      npm run deploy2 http://topos-node-1:8545 brownie/build/contracts/SubnetRegistrator.json $SUBNET_REGISTRATOR_SALT"
+      npm run deploy:topos-msg-protocol http://topos-node-1:8545 $$(cat /data/topos/data-1/consensus/validator.key) &&
+      npm run deploy http://topos-node-1:8545 artifacts/contracts/topos-core/SubnetRegistrator.sol/SubnetRegistrator.json $SUBNET_REGISTRATOR_SALT 4000000"
     volumes:
       - topos-data:/data/topos
     depends_on:
@@ -42,7 +42,7 @@ services:
       - TOPOS_CORE_PROXY_SALT=${TOPOS_CORE_PROXY_SALT}
       - SUBNET_REGISTRATOR_SALT=${SUBNET_REGISTRATOR_SALT}
     command: bash -c "
-      npm run deploy2:topos-msg-protocol http://incal-node-1:8545 $$(cat /data/incal/data-1/consensus/validator.key)"
+      npm run deploy:topos-msg-protocol http://incal-node-1:8545 $$(cat /data/incal/data-1/consensus/validator.key)"
     volumes:
       - incal-data:/data/incal
     depends_on:
@@ -62,7 +62,7 @@ services:
       - TOPOS_CORE_PROXY_SALT=${TOPOS_CORE_PROXY_SALT}
       - SUBNET_REGISTRATOR_SALT=${SUBNET_REGISTRATOR_SALT}
     command: bash -c "
-      npm run deploy2:topos-msg-protocol http://edena-node-1:8545 $$(cat /data/edena/data-1/consensus/validator.key)"
+      npm run deploy:topos-msg-protocol http://edena-node-1:8545 $$(cat /data/edena/data-1/consensus/validator.key)"
     volumes:
       - edena-data:/data/edena
     depends_on:

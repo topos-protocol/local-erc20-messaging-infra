@@ -47,7 +47,7 @@ A few environment variables are editable from the `.env` file found on the root 
 - `TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION`: `toposware/topos-smart-contracts`'s version
 - `TOPOS_CORE_CONTRACT_ADDRESS`: `ToposCore` contract's address
 
-Other (private) environment variables need be set in the environment:
+Other (private) environment variables need be set in the environment (e.g., `~/.zshrc`, `~/.bashrc`):
 
 - `PRIVATE_KEY`: ToposDeployer's private key (see [here](https://www.notion.so/Devnet-Info-8091660458cb4e2ebc5e1c8b79c8671e#5c5f0fc051244f4f8ebaaa1c57c0db24))—ToposDeployer is a account with funds on every subnet
 - `TOKEN_DEPLOYER_SALT`: salt for TokenDeployer's deployment (see [here](https://www.notion.so/Devnet-Info-8091660458cb4e2ebc5e1c8b79c8671e#2a9173f7c2814c0fbbab97962dd1762c))
