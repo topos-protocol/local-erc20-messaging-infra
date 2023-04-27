@@ -46,7 +46,7 @@ services:
       - incal-data:/data
     restart: on-failure
     ports:
-      - "20002:8545"
+      - "${INCAL_HOST_PORT}:8545"
     networks:
       - full-msg-protocol-infra-docker
 

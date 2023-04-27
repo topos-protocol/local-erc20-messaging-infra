@@ -46,7 +46,7 @@ services:
       - topos-data:/data
     restart: on-failure
     ports:
-      - "10002:8545"
+      - "${TOPOS_HOST_PORT}:8545"
     networks:
       - full-msg-protocol-infra-docker
 

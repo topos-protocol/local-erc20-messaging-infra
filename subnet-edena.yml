@@ -46,7 +46,7 @@ services:
       - edena-data:/data
     restart: on-failure
     ports:
-      - "30002:8545"
+      - "${EDENA_HOST_PORT}:8545"
     networks:
       - full-msg-protocol-infra-docker
 
