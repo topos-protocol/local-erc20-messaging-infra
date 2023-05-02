@@ -31,7 +31,7 @@ services:
       - PRIVATE_KEY=${PRIVATE_KEY}
       - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
       - AUTH0_ISSUER_URL=${AUTH0_ISSUER_URL}
-      - REDIS_HOST=redis
+      - REDIS_HOST=localhost
       - REDIS_PORT=6379
       # - REDIS_PORT=${REDIS_HOST_PORT}
       - TOPOS_SUBNET_ENDPOINT=http://localhost:10002
