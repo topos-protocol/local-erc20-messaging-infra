@@ -8,7 +8,7 @@ services:
       - "tce"
       - "run"
     healthcheck:
-      test: ./topos tce push-peer-list --endpoint http://localhost:1340 --format json /tmp/shared/peer_ids.json
+      test: ./topos tce push-peer-list --node http://localhost:1340 --format json /tmp/shared/peer_ids.json
       interval: 15s
     volumes:
       - shared:/tmp/shared
@@ -41,7 +41,7 @@ services:
       - "run"
     init: true
     healthcheck:
-      test: ./topos tce push-peer-list --endpoint http://localhost:1340 --format json /tmp/shared/peer_ids.json && ./topos tce status --endpoint http://localhost:1340
+      test: ./topos tce push-peer-list --node http://localhost:1340 --format json /tmp/shared/peer_ids.json && ./topos tce status --node http://localhost:1340
       interval: 5s
     volumes:
       - shared:/tmp/shared

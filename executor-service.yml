@@ -1,0 +1,35 @@
+version: "3.3"
+services:
+  redis:
+    image: redis/redis-stack-server:latest
+    container_name: redis
+    init: true
+    profiles:
+      - executor-service
+    environment:
+      - PRIVATE_KEY=${PRIVATE_KEY}
+      - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
+      - AUTH0_ISSUER_URL=${AUTH0_ISSUER_URL}
+      - TOPOS_SUBNET_ENDPOINT=http://localhost:10002
+      - SUBNET_REGISTRATOR_CONTRACT_ADDRESS=${SUBNET_REGISTRATOR_CONTRACT_ADDRESS}
+      - TOPOS_CORE_CONTRACT_ADDRESS=${TOPOS_CORE_CONTRACT_ADDRESS}
+      - TOPOS_MESSAGING_CONTRACT_ADDRESS=${TOPOS_MESSAGING_CONTRACT_ADDRESS}
+    network_mode: "host" # Port 6379 will be used on the host
+
+  executor-service:
+    image: ghcr.io/toposware/executor-service:${EXECUTOR_SERVICE_VERSION}
+    container_name: executor-service
+    init: true
+    profiles:
+      - executor-service
+    environment:
+      - PRIVATE_KEY=${PRIVATE_KEY}
+      - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
+      - AUTH0_ISSUER_URL=${AUTH0_ISSUER_URL}
+      - REDIS_HOST=localhost
+      - REDIS_PORT=6379
+      - TOPOS_SUBNET_ENDPOINT=http://localhost:10002
+      - SUBNET_REGISTRATOR_CONTRACT_ADDRESS=${SUBNET_REGISTRATOR_CONTRACT_ADDRESS}
+      - TOPOS_CORE_CONTRACT_ADDRESS=${TOPOS_CORE_CONTRACT_ADDRESS}
+      - TOPOS_MESSAGING_CONTRACT_ADDRESS=${TOPOS_MESSAGING_CONTRACT_ADDRESS}
+    network_mode: "host" # Port 3000 will be used on the host
