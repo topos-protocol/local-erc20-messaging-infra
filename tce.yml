@@ -47,7 +47,7 @@ services:
       - shared:/tmp/shared
     depends_on:
       tce-boot:
-        condition: service_healthy
+        condition: service_started
     ports:
       - "9090"
       - "1340"
