@@ -152,7 +152,7 @@ services:
       - TOPOS_LOCAL_SUBNET_DATA_DIR=/data/data-1
       - TOPOS_BASE_TCE_API_URL=http://infra-tce-boot-1:1340
       - TOPOS_OTLP_SERVICE_NAME=local-topos-sequencer
-      - TOPOS_OTLP_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com
+      - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.toposware.com
     networks:
       - full-msg-protocol-infra-docker
 
