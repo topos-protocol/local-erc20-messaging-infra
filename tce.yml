@@ -13,7 +13,7 @@ services:
       - "9090"
       - "1340:1340"
     environment:
-      - RUST_LOG=error,topos=debug
+      - RUST_LOG=error,topos=info
       - TOOLCHAIN_VERSION=stable
       - RUST_BACKTRACE=full
       - TCE_DB_PATH=/tmp/default-db
@@ -49,7 +49,7 @@ services:
       replicas: 4
     environment:
       - LOCAL_TEST_NET=true
-      - RUST_LOG=error,topos=debug
+      - RUST_LOG=error,topos=info
       - TCE_DB_PATH=/tmp/default-db
       - TCE_API_ADDR=0.0.0.0:1340
       - TOPOS_OTLP_SERVICE_NAME=local-tce-peer-node
