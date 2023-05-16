@@ -31,8 +31,8 @@ services:
     command: bash -c "
       npm run deploy:topos-msg-protocol http://topos-node-1:8545 $$(cat /data/topos/data-1/consensus/validator.key) &&
       npm run deploy http://topos-node-1:8545 artifacts/contracts/topos-core/SubnetRegistrator.sol/SubnetRegistrator.json $SUBNET_REGISTRATOR_SALT 4000000 &&
-      npm run register-subnet http://topos-node-1:8545 $SUBNET_REGISTRATOR_CONTRACT_ADDRESS Incal $INCAL_CHAIN_ID ws://localhost:$INCAL_HOST_PORT/ws INCA $INCAL_LOGO_URL $$(cat /data/incal/data-1/consensus/validator.key) &&
-      npm run register-subnet http://topos-node-1:8545 $SUBNET_REGISTRATOR_CONTRACT_ADDRESS Edena $EDENA_CHAIN_ID ws://localhost:$EDENA_HOST_PORT/ws EDEN $EDENA_LOGO_URL $$(cat /data/edena/data-1/consensus/validator.key)"
+      npm run register-subnet http://topos-node-1:8545 $SUBNET_REGISTRATOR_CONTRACT_ADDRESS Incal $INCAL_CHAIN_ID localhost:$INCAL_HOST_PORT INCA $INCAL_LOGO_URL $$(cat /data/incal/data-1/consensus/validator.key) &&
+      npm run register-subnet http://topos-node-1:8545 $SUBNET_REGISTRATOR_CONTRACT_ADDRESS Edena $EDENA_CHAIN_ID localhost:$EDENA_HOST_PORT EDEN $EDENA_LOGO_URL $$(cat /data/edena/data-1/consensus/validator.key)"
     volumes:
       - topos-data:/data/topos
       - incal-data:/data/incal
