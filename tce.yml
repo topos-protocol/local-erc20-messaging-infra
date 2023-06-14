@@ -21,6 +21,7 @@ services:
       - RUST_BACKTRACE=full
       - TCE_DB_PATH=/tmp/default-db
       - TCE_API_ADDR=0.0.0.0:1340
+      - TCE_GRAPHQL_API_ADDR=0.0.0.0:4000
       - TCE_LOCAL_KS=1 # 12D3KooWRhFCXBhmsMnur3up3vJsDoqWh4c39PKXgSWwzAzDHNLn
       - TOPOS_OTLP_SERVICE_NAME=local-tce-boot-node
       - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.toposware.com
@@ -59,6 +60,7 @@ services:
       - RUST_LOG=info,topos=info
       - TCE_DB_PATH=/tmp/default-db
       - TCE_API_ADDR=0.0.0.0:1340
+      - TCE_GRAPHQL_API_ADDR=0.0.0.0:4000
       - TOPOS_OTLP_SERVICE_NAME=local-tce-peer-node
       - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.toposware.com
       - TCE_ECHO_SAMPLE_SIZE=4
