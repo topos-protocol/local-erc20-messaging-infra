@@ -56,8 +56,9 @@ docker compose --profile executor-service up -d
 A few environment variables are editable from the `.env` file found on the root of this repository.
 
 - `TOPOS_EDGE_VERSION`: `topos-network/polygon-edge`'s version
-- `TOPOS_VERSION`: `toposware/topos`'s version
+- `TOPOS_VERSION`: `topos-network/topos`'s version
 - `TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION`: `toposware/topos-smart-contracts`'s version
+- `EXECUTOR_SERVICE_VERSION`: `topos-network/executor-service`'s version
 - `TOPOS_CORE_CONTRACT_ADDRESS`: `ToposCore` contract's address
 
 Other (private) environment variables need be set in the environment (e.g., `~/.zshrc`, `~/.bashrc`):
@@ -67,6 +68,7 @@ Other (private) environment variables need be set in the environment (e.g., `~/.
 - `TOPOS_CORE_SALT`: salt for ToposCore's deployment (see [here](https://www.notion.so/Devnet-Info-8091660458cb4e2ebc5e1c8b79c8671e#2a9173f7c2814c0fbbab97962dd1762c))
 - `TOPOS_CORE_PROXY_SALT`: salt for ToposCoreProxy's deployment (see [here](https://www.notion.so/Devnet-Info-8091660458cb4e2ebc5e1c8b79c8671e#2a9173f7c2814c0fbbab97962dd1762c))
 - `SUBNET_REGISTRATOR_SALT`: salt for SubnetRegistrator's deployment (see [here](https://www.notion.so/Devnet-Info-8091660458cb4e2ebc5e1c8b79c8671e#2a9173f7c2814c0fbbab97962dd1762c))
+- `ERC20_MESSAGING_SALT`: salt for ERC20Messaging's deployment (see [here](https://www.notion.so/Devnet-Info-8091660458cb4e2ebc5e1c8b79c8671e#2a9173f7c2814c0fbbab97962dd1762c))
 
 ### Important!
 
