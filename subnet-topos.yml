@@ -1,75 +1,160 @@
 version: "3.3"
 services:
-  tce-boot:
-    image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
+  # Create keys and genesis
+  topos-init:
+    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-init
     init: true
-    command:
-      - "boot"
-      - "tce"
-      - "run"
-    healthcheck:
-      test: ./topos tce push-peer-list --node http://localhost:1340 --format json /tmp/shared/peer_ids.json
-      interval: 15s
-    volumes:
-      - shared:/tmp/shared
-    ports:
-      - "9090"
-      - "1340:1340"
+    command: ["init", "ibft"]
     environment:
-      - RUST_LOG=info,topos=info
-      - TOOLCHAIN_VERSION=stable
-      - RUST_BACKTRACE=full
-      - TCE_DB_PATH=/tmp/default-db
-      - TCE_API_ADDR=0.0.0.0:1340
-      - TCE_LOCAL_KS=1 # 12D3KooWRhFCXBhmsMnur3up3vJsDoqWh4c39PKXgSWwzAzDHNLn
-      - TOPOS_OTLP_SERVICE_NAME=local-tce-boot-node
-      - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.toposware.com
-      - TCE_ECHO_SAMPLE_SIZE=4
-      - TCE_READY_SAMPLE_SIZE=4
-      - TCE_DELIVERY_SAMPLE_SIZE=4
-      - TCE_ECHO_THRESHOLD=3
-      - TCE_READY_THRESHOLD=1
-      - TCE_DELIVERY_THRESHOLD=2
-      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=2
+      - CHAIN_ID=${TOPOS_CHAIN_ID}
+      - BOOTNODE_DOMAIN_NAME=topos-node-1
+    depends_on:
+      contracts-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+      - contracts:/contracts
     networks:
       - local-erc20-messaging-infra-docker
 
-  tce-peer:
-    image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
-    command:
-      - "peer"
-      - "tce"
-      - "run"
+  topos-node-1:
+    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-1
     init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-1"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--seal"
     healthcheck:
-      test: ./topos tce push-peer-list --node http://localhost:1340 --format json /tmp/shared/peer_ids.json && ./topos tce status --node http://localhost:1340
+      test: ./polygon-edge status | awk '/Number/ {print $$NF}' | tr -d '\n' | grep -v -w "0"
       interval: 5s
+      retries: 10
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
     volumes:
-      - shared:/tmp/shared
+      - topos-data:/data
+    restart: on-failure
+    ports:
+      - "${TOPOS_HOST_PORT}:8545"
+    networks:
+      - local-erc20-messaging-infra-docker
+
+  topos-node-2:
+    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-2
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-2"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--seal"
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    restart: on-failure
+    networks:
+      - local-erc20-messaging-infra-docker
+
+  topos-node-3:
+    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-3
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-3"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--seal"
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    restart: on-failure
+    networks:
+      - local-erc20-messaging-infra-docker
+
+  topos-node-4:
+    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-4
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-4"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--seal"
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    restart: on-failure
+    networks:
+      - local-erc20-messaging-infra-docker
+
+  topos-sequencer:
+    image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
+    container_name: topos-sequencer
+    init: true
+    command:
+      - "boot"
+      - "sequencer"
+      - "run"
+    volumes:
+      - topos-data:/data
     depends_on:
       tce-boot:
-        condition: service_healthy
-    ports:
-      - "9090"
-      - "1340"
-    deploy:
-      replicas: 4
+        condition: service_started
+      contracts-topos:
+        condition: service_completed_successfully
     environment:
-      - LOCAL_TEST_NET=true
-      - RUST_LOG=info,topos=info
-      - TCE_DB_PATH=/tmp/default-db
-      - TCE_API_ADDR=0.0.0.0:1340
-      - TOPOS_OTLP_SERVICE_NAME=local-tce-peer-node
-      - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.toposware.com
-      - TCE_ECHO_SAMPLE_SIZE=4
-      - TCE_READY_SAMPLE_SIZE=4
-      - TCE_DELIVERY_SAMPLE_SIZE=4
-      - TCE_ECHO_THRESHOLD=3
-      - TCE_READY_THRESHOLD=1
-      - TCE_DELIVERY_THRESHOLD=2
-      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=2
+      - RUST_LOG=info,topos=debug
+      - TOOLCHAIN_VERSION=stable
+      - RUST_BACKTRACE=full
+      - SUBNET_JSONRPC_ENDPOINT=topos-node-1:8545
+      - SUBNET_CONTRACT_ADDRESS=${TOPOS_CORE_CONTRACT_ADDRESS}
+      - TOPOS_LOCAL_SUBNET_DATA_DIR=/data/data-1
+      - TOPOS_BASE_TCE_API_URL=http://infra-tce-boot-1:1340
+      - TOPOS_OTLP_SERVICE_NAME=local-topos-sequencer
+      - TOPOS_OTLP_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com
     networks:
       - local-erc20-messaging-infra-docker
 
 volumes:
-  shared:
+  topos-data:
