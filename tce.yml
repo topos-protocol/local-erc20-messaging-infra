@@ -28,7 +28,7 @@ services:
       - TCE_READY_THRESHOLD=1
       - TCE_DELIVERY_THRESHOLD=2
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
   tce-peer:
     image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
@@ -61,7 +61,7 @@ services:
       - TCE_READY_THRESHOLD=1
       - TCE_DELIVERY_THRESHOLD=2
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
 volumes:
   shared:

@@ -16,7 +16,7 @@ services:
       - incal-data:/data
       - contracts:/contracts
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
   incal-node-1:
     image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
@@ -48,7 +48,7 @@ services:
     ports:
       - "${INCAL_HOST_PORT}:8545"
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
   incal-node-2:
     image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
@@ -74,7 +74,7 @@ services:
       - incal-data:/data
     restart: on-failure
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
   incal-node-3:
     image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
@@ -100,7 +100,7 @@ services:
       - incal-data:/data
     restart: on-failure
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
   incal-node-4:
     image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
@@ -126,7 +126,7 @@ services:
       - incal-data:/data
     restart: on-failure
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
   incal-sequencer:
     image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
@@ -154,7 +154,7 @@ services:
       - TOPOS_OTLP_SERVICE_NAME=local-incal-sequencer
       - TOPOS_OTLP_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
 volumes:
   incal-data:

@@ -9,7 +9,7 @@
 <br />
 
 <p align="center">
-Run the full Topos Messaging Protocol with docker compose 🐳
+Run the local ERC20 messaging infrastructure with docker compose 🐳
 </p>
 
 <br />

@@ -1,5 +1,5 @@
 version: "3.3"
 networks:
-  full-msg-protocol-infra-docker:
+  local-erc20-messaging-infra-docker:
     driver: bridge
-    name: full-msg-protocol-infra-docker
+    name: local-erc20-messaging-infra-docker

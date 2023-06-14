@@ -8,7 +8,7 @@ services:
     volumes:
       - contracts:/usr/src/app/artifacts/contracts
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
   contracts-topos:
     image: ghcr.io/topos-network/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
@@ -45,7 +45,7 @@ services:
       edena-node-1:
         condition: service_healthy
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
   contracts-incal:
     image: ghcr.io/topos-network/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
@@ -66,7 +66,7 @@ services:
       incal-node-1:
         condition: service_healthy
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
   contracts-edena:
     image: ghcr.io/topos-network/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
@@ -87,7 +87,7 @@ services:
       edena-node-1:
         condition: service_healthy
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
 volumes:
   contracts:
