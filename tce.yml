@@ -3,9 +3,12 @@ services:
   tce-boot:
     image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
     init: true
-    command: boot tce run
+    command:
+      - "boot"
+      - "tce"
+      - "run"
     healthcheck:
-      test: ./topos tce push-peer-list --node http://localhost:1340 --format json /tmp/shared/peer_ids.json && ./topos tce status --node http://localhost:1340
+      test: ./topos tce push-peer-list --node http://localhost:1340 --format json /tmp/shared/peer_ids.json
       interval: 15s
     volumes:
       - shared:/tmp/shared
@@ -13,7 +16,7 @@ services:
       - "9090"
       - "1340:1340"
     environment:
-      - RUST_LOG=error,topos=info
+      - RUST_LOG=info,topos=info
       - TOOLCHAIN_VERSION=stable
       - RUST_BACKTRACE=full
       - TCE_DB_PATH=/tmp/default-db
@@ -27,12 +30,16 @@ services:
       - TCE_ECHO_THRESHOLD=3
       - TCE_READY_THRESHOLD=1
       - TCE_DELIVERY_THRESHOLD=2
+      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=2
     networks:
       - local-erc20-messaging-infra-docker
 
   tce-peer:
     image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
-    command: peer tce run
+    command:
+      - "peer"
+      - "tce"
+      - "run"
     init: true
     healthcheck:
       test: ./topos tce push-peer-list --node http://localhost:1340 --format json /tmp/shared/peer_ids.json && ./topos tce status --node http://localhost:1340
@@ -41,7 +48,7 @@ services:
       - shared:/tmp/shared
     depends_on:
       tce-boot:
-        condition: service_started
+        condition: service_healthy
     ports:
       - "9090"
       - "1340"
@@ -49,7 +56,7 @@ services:
       replicas: 4
     environment:
       - LOCAL_TEST_NET=true
-      - RUST_LOG=error,topos=info
+      - RUST_LOG=info,topos=info
       - TCE_DB_PATH=/tmp/default-db
       - TCE_API_ADDR=0.0.0.0:1340
       - TOPOS_OTLP_SERVICE_NAME=local-tce-peer-node
@@ -60,6 +67,7 @@ services:
       - TCE_ECHO_THRESHOLD=3
       - TCE_READY_THRESHOLD=1
       - TCE_DELIVERY_THRESHOLD=2
+      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=2
     networks:
       - local-erc20-messaging-infra-docker
 
