@@ -16,7 +16,7 @@ services:
       - edena-data:/data
       - contracts:/contracts
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
   edena-node-1:
     image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
@@ -48,7 +48,7 @@ services:
     ports:
       - "${EDENA_HOST_PORT}:8545"
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
   edena-node-2:
     image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
@@ -74,7 +74,7 @@ services:
       - edena-data:/data
     restart: on-failure
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
   edena-node-3:
     image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
@@ -100,7 +100,7 @@ services:
       - edena-data:/data
     restart: on-failure
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
   edena-node-4:
     image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
@@ -126,7 +126,7 @@ services:
       - edena-data:/data
     restart: on-failure
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
   edena-sequencer:
     image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
@@ -140,7 +140,7 @@ services:
       - edena-data:/data
     depends_on:
       tce-boot:
-        condition: service_started
+        condition: service_healthy
       contracts-edena:
         condition: service_completed_successfully
     environment:
@@ -154,7 +154,7 @@ services:
       - TOPOS_OTLP_SERVICE_NAME=local-edena-sequencer
       - TOPOS_OTLP_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com
     networks:
-      - full-msg-protocol-infra-docker
+      - local-erc20-messaging-infra-docker
 
 volumes:
   edena-data:
