@@ -21,7 +21,6 @@ services:
       - TOPOS_CORE_PROXY_SALT=${TOPOS_CORE_PROXY_SALT}
       - ERC20_MESSAGING_SALT=${ERC20_MESSAGING_SALT}
       - SUBNET_REGISTRATOR_SALT=${SUBNET_REGISTRATOR_SALT}
-      - SUBNET_REGISTRATOR_CONTRACT_ADDRESS=${SUBNET_REGISTRATOR_CONTRACT_ADDRESS}
       - INCAL_HOST_PORT=${INCAL_HOST_PORT}
       - INCAL_CHAIN_ID=${INCAL_CHAIN_ID}
       - INCAL_LOGO_URL=${INCAL_LOGO_URL}
@@ -29,15 +28,19 @@ services:
       - EDENA_CHAIN_ID=${EDENA_CHAIN_ID}
       - EDENA_LOGO_URL=${EDENA_LOGO_URL}
     command: bash -c "
-      npm run deploy:topos-msg-protocol http://topos-node-1:8545 $$(cat /data/topos/data-1/consensus/validator.key) &&
-      npm run deploy http://topos-node-1:8545 artifacts/contracts/topos-core/SubnetRegistrator.sol/SubnetRegistrator.json $SUBNET_REGISTRATOR_SALT 4000000 &&
-      npm run register-subnet http://topos-node-1:8545 $SUBNET_REGISTRATOR_CONTRACT_ADDRESS Incal $INCAL_CHAIN_ID localhost:$INCAL_HOST_PORT INCA $INCAL_LOGO_URL $$(cat /data/incal/data-1/consensus/validator.key) &&
-      npm run register-subnet http://topos-node-1:8545 $SUBNET_REGISTRATOR_CONTRACT_ADDRESS Edena $EDENA_CHAIN_ID localhost:$EDENA_HOST_PORT EDEN $EDENA_LOGO_URL $$(cat /data/edena/data-1/consensus/validator.key)"
+      npx ts-node scripts/deploy-topos-msg-protocol http://topos-node-1:8545 $(cat /data/topos/data-1/consensus/validator.key) > /contracts/.env &&
+      echo export SUBNET_REGISTRATOR_CONTRACT_ADDRESS=$(npx ts-node scripts/deploy http://topos-node-1:8545 artifacts/contracts/topos-core/SubnetRegistrator.sol/SubnetRegistrator.json $SUBNET_REGISTRATOR_SALT 4000000) >> /contracts/.env &&
+      source /contracts/.env &&
+      npm run register-subnet http://topos-node-1:8545 $(printenv SUBNET_REGISTRATOR_CONTRACT_ADDRESS) Incal $INCAL_CHAIN_ID localhost:$INCAL_HOST_PORT INCA $INCAL_LOGO_URL $(cat /data/incal/data-1/consensus/validator.key) &&
+      npm run register-subnet http://topos-node-1:8545 $(printenv SUBNET_REGISTRATOR_CONTRACT_ADDRESS) Edena $EDENA_CHAIN_ID localhost:$EDENA_HOST_PORT EDEN $EDENA_LOGO_URL $(cat /data/edena/data-1/consensus/validator.key)"
     volumes:
+      - contracts:/contracts
       - topos-data:/data/topos
       - incal-data:/data/incal
       - edena-data:/data/edena
     depends_on:
+      contracts-init:
+        condition: service_completed_successfully
       topos-node-1:
         condition: service_healthy
       incal-node-1:
