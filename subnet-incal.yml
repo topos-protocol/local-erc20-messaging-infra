@@ -132,23 +132,26 @@ services:
     image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
     container_name: incal-sequencer
     init: true
-    command:
-      - "boot"
-      - "sequencer"
-      - "run"
     volumes:
+      - contracts:/contracts
       - incal-data:/data
     depends_on:
       tce-boot:
         condition: service_healthy
+      contracts-topos:
+        condition: service_completed_successfully
       contracts-incal:
         condition: service_completed_successfully
+    entrypoint: ""
+    command: bash -c "
+      source /contracts/.env &&
+      export SUBNET_CONTRACT_ADDRESS=$(printenv TOPOS_CORE_CONTRACT_ADDRESS) &&
+      init.sh boot sequencer run"
     environment:
       - RUST_LOG=info,topos=debug
       - TOOLCHAIN_VERSION=stable
       - RUST_BACKTRACE=full
       - SUBNET_JSONRPC_ENDPOINT=incal-node-1:8545
-      - SUBNET_CONTRACT_ADDRESS=${TOPOS_CORE_CONTRACT_ADDRESS}
       - TOPOS_LOCAL_SUBNET_DATA_DIR=/data/data-1
       - TOPOS_BASE_TCE_API_URL=http://infra-tce-boot-1:1340
       - TOPOS_OTLP_SERVICE_NAME=local-incal-sequencer

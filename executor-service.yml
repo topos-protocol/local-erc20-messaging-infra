@@ -14,6 +14,14 @@ services:
     init: true
     profiles:
       - executor-service
+    depends_on:
+      contracts-topos:
+        condition: service_completed_successfully
+    volumes:
+      - contracts:/contracts
+    command: bash -c "
+      source /contracts/.env &&
+      npm run start:prod"
     environment:
       - PRIVATE_KEY=${PRIVATE_KEY}
       - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
@@ -21,6 +29,4 @@ services:
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - TOPOS_SUBNET_ENDPOINT=localhost:${TOPOS_HOST_PORT}
-      - SUBNET_REGISTRATOR_CONTRACT_ADDRESS=${SUBNET_REGISTRATOR_CONTRACT_ADDRESS}
-      - TOPOS_CORE_CONTRACT_ADDRESS=${TOPOS_CORE_CONTRACT_ADDRESS}
     network_mode: "host" # Port 3000 will be used on the host
