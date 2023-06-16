@@ -145,7 +145,7 @@ services:
     entrypoint: ""
     command: bash -c "
       source /contracts/.env &&
-      export SUBNET_CONTRACT_ADDRESS=$(printenv TOPOS_CORE_CONTRACT_ADDRESS) &&
+      export SUBNET_CONTRACT_ADDRESS=$(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS) &&
       init.sh boot sequencer run"
     environment:
       - RUST_LOG=info,topos=debug
