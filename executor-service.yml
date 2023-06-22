@@ -21,6 +21,7 @@ services:
       - contracts:/contracts
     command: bash -c "
       source /contracts/.env &&
+      export TOPOS_CORE_CONTRACT_ADDRESS=$(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS) &&
       npm run start:prod"
     environment:
       - PRIVATE_KEY=${PRIVATE_KEY}
