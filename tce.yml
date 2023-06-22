@@ -15,6 +15,7 @@ services:
     ports:
       - "9090"
       - "1340:1340"
+      - "4000:4000"
     environment:
       - RUST_LOG=info,topos=info
       - TOOLCHAIN_VERSION=stable
