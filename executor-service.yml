@@ -9,7 +9,7 @@ services:
     network_mode: "host" # Port 6379 will be used on the host
 
   executor-service:
-    image: ghcr.io/topos-network/executor-service:${EXECUTOR_SERVICE_VERSION}
+    image: ghcr.io/topos-protocol/executor-service:${EXECUTOR_SERVICE_VERSION}
     container_name: executor-service
     init: true
     profiles:

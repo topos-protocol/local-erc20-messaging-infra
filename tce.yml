@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   tce-boot:
-    image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
+    image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     init: true
     command:
       - "boot"
@@ -37,7 +37,7 @@ services:
       - local-erc20-messaging-infra-docker
 
   tce-peer:
-    image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
+    image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     command:
       - "peer"
       - "tce"
