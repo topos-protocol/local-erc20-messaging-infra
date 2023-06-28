@@ -2,7 +2,7 @@ version: "3.3"
 services:
   # Create keys and genesis
   edena-init:
-    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
     container_name: edena-init
     init: true
     command: ["init", "ibft"]
@@ -19,7 +19,7 @@ services:
       - local-erc20-messaging-infra-docker
 
   edena-node-1:
-    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
     container_name: edena-node-1
     init: true
     command:
@@ -51,7 +51,7 @@ services:
       - local-erc20-messaging-infra-docker
 
   edena-node-2:
-    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
     container_name: edena-node-2
     init: true
     command:
@@ -77,7 +77,7 @@ services:
       - local-erc20-messaging-infra-docker
 
   edena-node-3:
-    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
     container_name: edena-node-3
     init: true
     command:
@@ -103,7 +103,7 @@ services:
       - local-erc20-messaging-infra-docker
 
   edena-node-4:
-    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
     container_name: edena-node-4
     init: true
     command:
@@ -129,7 +129,7 @@ services:
       - local-erc20-messaging-infra-docker
 
   edena-sequencer:
-    image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
+    image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     container_name: edena-sequencer
     init: true
     volumes:

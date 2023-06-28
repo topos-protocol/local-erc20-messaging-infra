@@ -2,7 +2,7 @@ version: "3.3"
 services:
   # Create keys and genesis
   incal-init:
-    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
     container_name: incal-init
     init: true
     command: ["init", "ibft"]
@@ -19,7 +19,7 @@ services:
       - local-erc20-messaging-infra-docker
 
   incal-node-1:
-    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
     container_name: incal-node-1
     init: true
     command:
@@ -51,7 +51,7 @@ services:
       - local-erc20-messaging-infra-docker
 
   incal-node-2:
-    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
     container_name: incal-node-2
     init: true
     command:
@@ -77,7 +77,7 @@ services:
       - local-erc20-messaging-infra-docker
 
   incal-node-3:
-    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
     container_name: incal-node-3
     init: true
     command:
@@ -103,7 +103,7 @@ services:
       - local-erc20-messaging-infra-docker
 
   incal-node-4:
-    image: ghcr.io/topos-network/polygon-edge:${TOPOS_EDGE_VERSION}
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
     container_name: incal-node-4
     init: true
     command:
@@ -129,7 +129,7 @@ services:
       - local-erc20-messaging-infra-docker
 
   incal-sequencer:
-    image: ghcr.io/topos-network/topos:${TOPOS_VERSION}
+    image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     container_name: incal-sequencer
     init: true
     volumes:

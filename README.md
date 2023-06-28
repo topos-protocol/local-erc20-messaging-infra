@@ -55,10 +55,10 @@ docker compose --profile executor-service up -d
 
 A few environment variables are editable from the `.env` file found on the root of this repository.
 
-- `TOPOS_EDGE_VERSION`: `topos-network/polygon-edge`'s version
-- `TOPOS_VERSION`: `topos-network/topos`'s version
+- `TOPOS_EDGE_VERSION`: `topos-protocol/polygon-edge`'s version
+- `TOPOS_VERSION`: `topos-protocol/topos`'s version
 - `TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION`: `toposware/topos-smart-contracts`'s version
-- `EXECUTOR_SERVICE_VERSION`: `topos-network/executor-service`'s version
+- `EXECUTOR_SERVICE_VERSION`: `topos-protocol/executor-service`'s version
 - `TOPOS_CORE_CONTRACT_ADDRESS`: `ToposCore` contract's address
 
 Other (private) environment variables need be set in the environment (e.g., `~/.zshrc`, `~/.bashrc`):

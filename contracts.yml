@@ -2,7 +2,7 @@ version: "3.3"
 services:
   # Get ConstAddressDeployer compiled contract (JSON file)
   contracts-init:
-    image: ghcr.io/topos-network/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
+    image: ghcr.io/topos-protocol/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
     container_name: contracts-init
     init: true
     volumes:
@@ -11,7 +11,7 @@ services:
       - local-erc20-messaging-infra-docker
 
   contracts-topos:
-    image: ghcr.io/topos-network/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
+    image: ghcr.io/topos-protocol/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
     container_name: contracts-topos
     init: true
     environment:
@@ -51,7 +51,7 @@ services:
       - local-erc20-messaging-infra-docker
 
   contracts-incal:
-    image: ghcr.io/topos-network/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
+    image: ghcr.io/topos-protocol/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
     container_name: contracts-incal
     init: true
     environment:
@@ -72,7 +72,7 @@ services:
       - local-erc20-messaging-infra-docker
 
   contracts-edena:
-    image: ghcr.io/topos-network/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
+    image: ghcr.io/topos-protocol/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
     container_name: contracts-edena
     init: true
     environment:
