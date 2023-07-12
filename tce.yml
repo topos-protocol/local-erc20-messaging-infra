@@ -26,14 +26,14 @@ services:
       - TCE_METRICS_API_ADDR=0.0.0.0:4001
       - TCE_LOCAL_KS=1 # 12D3KooWRhFCXBhmsMnur3up3vJsDoqWh4c39PKXgSWwzAzDHNLn
       - TOPOS_OTLP_SERVICE_NAME=local-tce-boot-node
-      - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.toposware.com
+      - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.topos.technology
       - TCE_ECHO_SAMPLE_SIZE=4
       - TCE_READY_SAMPLE_SIZE=4
       - TCE_DELIVERY_SAMPLE_SIZE=4
       - TCE_ECHO_THRESHOLD=3
       - TCE_READY_THRESHOLD=1
       - TCE_DELIVERY_THRESHOLD=2
-      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=2
+      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=3
     networks:
       - local-erc20-messaging-infra-docker
 
@@ -65,14 +65,14 @@ services:
       - TCE_GRAPHQL_API_ADDR=0.0.0.0:4000
       - TCE_METRICS_API_ADDR=0.0.0.0:4001
       - TOPOS_OTLP_SERVICE_NAME=local-tce-peer-node
-      - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.toposware.com
+      - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.topos.technology
       - TCE_ECHO_SAMPLE_SIZE=4
       - TCE_READY_SAMPLE_SIZE=4
       - TCE_DELIVERY_SAMPLE_SIZE=4
       - TCE_ECHO_THRESHOLD=3
       - TCE_READY_THRESHOLD=1
       - TCE_DELIVERY_THRESHOLD=2
-      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=2
+      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=3
     networks:
       - local-erc20-messaging-infra-docker
 
