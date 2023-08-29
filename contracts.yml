@@ -26,7 +26,7 @@ services:
       - INCAL_LOGO_URL=${INCAL_LOGO_URL}
     command: bash -c "
       npx ts-node scripts/deploy-topos-msg-protocol http://topos-node-1:8545 $(cat /data/topos/data-1/consensus/validator.key) > /contracts/.env &&
-      echo export SUBNET_REGISTRATOR_CONTRACT_ADDRESS=$(npx ts-node scripts/deploy http://topos-node-1:8545 artifacts/contracts/topos-core/SubnetRegistrator.sol/SubnetRegistrator.json $SUBNET_REGISTRATOR_SALT 4000000) >> /contracts/.env &&
+      echo export SUBNET_REGISTRATOR_CONTRACT_ADDRESS=$(npx ts-node scripts/deploy http://topos-node-1:8545 artifacts/contracts/topos-core/SubnetRegistrator.sol/SubnetRegistrator.json $SUBNET_REGISTRATOR_SALT 4000000 false) >> /contracts/.env &&
       source /contracts/.env &&
       npm run register-subnet http://topos-node-1:8545 $(printenv SUBNET_REGISTRATOR_CONTRACT_ADDRESS) Incal $INCAL_CHAIN_ID localhost:$INCAL_HOST_PORT INCA $INCAL_LOGO_URL $(cat /data/incal/data-1/consensus/validator.key)"
     volumes:
