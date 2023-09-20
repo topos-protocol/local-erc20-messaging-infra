@@ -17,7 +17,7 @@ services:
       - "1340:1340"
       - "4000:4000"
     environment:
-      - RUST_LOG=info,topos=info
+      - RUST_LOG=info,topos=info,topos_tce_api=debug
       - TOOLCHAIN_VERSION=stable
       - RUST_BACKTRACE=full
       - TCE_DB_PATH=/tmp/default-db

@@ -24,15 +24,22 @@ services:
       - INCAL_HOST_PORT=${INCAL_HOST_PORT}
       - INCAL_CHAIN_ID=${INCAL_CHAIN_ID}
       - INCAL_LOGO_URL=${INCAL_LOGO_URL}
+      - FUJI_JSON_RPC_ENDPOINT=${FUJI_JSON_RPC_ENDPOINT}
+      - FUJI_CHAIN_ID=${FUJI_CHAIN_ID}
+      - FUJI_LOGO_URL=${FUJI_LOGO_URL}
+      - FUJI_ALL_ENDPOINT=${FUJI_ALL_ENDPOINT}
     command: bash -c "
       npx ts-node scripts/deploy-topos-msg-protocol http://topos-node-1:8545 $(cat /data/topos/data-1/consensus/validator.key) > /contracts/.env &&
       echo export SUBNET_REGISTRATOR_CONTRACT_ADDRESS=$(npx ts-node scripts/deploy-subnet-registrator http://topos-node-1:8545 $(cat /data/topos/data-1/consensus/validator.key) $SUBNET_REGISTRATOR_SALT 4000000) >> /contracts/.env &&
       source /contracts/.env &&
-      npm run register-subnet http://topos-node-1:8545 $(printenv SUBNET_REGISTRATOR_CONTRACT_ADDRESS) Incal $INCAL_CHAIN_ID localhost:$INCAL_HOST_PORT INCA $INCAL_LOGO_URL $(cat /data/topos/data-1/consensus/validator.key) $(cat /data/incal/data-1/consensus/validator.key)"
+      cat /contracts/.env &&
+      npm run register-subnet http://topos-node-1:8545 $(printenv SUBNET_REGISTRATOR_CONTRACT_ADDRESS) Incal $INCAL_CHAIN_ID localhost:$INCAL_HOST_PORT INCA $INCAL_LOGO_URL $(cat /data/topos/data-1/consensus/validator.key) $(cat /data/incal/data-1/consensus/validator.key) &&
+      npm run register-subnet http://topos-node-1:8545 $(printenv SUBNET_REGISTRATOR_CONTRACT_ADDRESS) Fuji $FUJI_CHAIN_ID $(printenv FUJI_ALL_ENDPOINT) AVAX $FUJI_LOGO_URL $(cat /data/topos/data-1/consensus/validator.key) $(cat /data/fuji/data-1/consensus/validator.key) "
     volumes:
       - contracts:/contracts
       - topos-data:/data/topos
       - incal-data:/data/incal
+      - fuji-data:/data/fuji
     depends_on:
       contracts-init:
         condition: service_completed_successfully
@@ -40,6 +47,8 @@ services:
         condition: service_healthy
       incal-node-1:
         condition: service_healthy
+      # fuji-init:
+      #   condition: service_completed_successfully
     networks:
       - local-erc20-messaging-infra-docker
 
@@ -63,6 +72,28 @@ services:
         condition: service_healthy
     networks:
       - local-erc20-messaging-infra-docker
+
+  # contracts-fuji:
+  #   image: ghcr.io/topos-protocol/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
+  #   container_name: contracts-fuji
+  #   init: true
+  #   environment:
+  #     - PRIVATE_KEY=${PRIVATE_KEY}
+  #     - TOKEN_DEPLOYER_SALT=${TOKEN_DEPLOYER_SALT}
+  #     - TOPOS_CORE_SALT=${TOPOS_CORE_SALT}
+  #     - TOPOS_CORE_PROXY_SALT=${TOPOS_CORE_PROXY_SALT}
+  #     - ERC20_MESSAGING_SALT=${ERC20_MESSAGING_SALT}
+  #     - SUBNET_REGISTRATOR_SALT=${SUBNET_REGISTRATOR_SALT}
+  #     - FUJI_JSON_RPC_ENDPOINT=${FUJI_JSON_RPC_ENDPOINT}
+  #   command: bash -c "
+  #     npm run deploy:topos-msg-protocol-dynamic $(printenv FUJI_JSON_RPC_ENDPOINT) $(printenv PRIVATE_KEY)"
+  #   volumes:
+  #     - fuji-data:/data/fuji
+  #   depends_on:
+  #     fuji-init:
+  #       condition: service_completed_successfully
+  #   networks:
+  #     - local-erc20-messaging-infra-docker
 
 volumes:
   contracts:
