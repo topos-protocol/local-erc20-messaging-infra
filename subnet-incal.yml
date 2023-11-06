@@ -163,7 +163,7 @@ services:
       - TOPOS_LOCAL_SUBNET_DATA_DIR=/data/data-1
       - TOPOS_OTLP_SERVICE_NAME=local-incal-sequencer
       - TOPOS_OTLP_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com
-      - TOPOS_SUBNET_JSONRPC_HTTP=incal-node-1:8545
+      - TOPOS_SUBNET_JSONRPC_HTTP=http://incal-node-1:8545
     networks:
       - local-erc20-messaging-infra-docker
 
