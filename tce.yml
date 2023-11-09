@@ -5,10 +5,10 @@ services:
     init: true
     command:
       - "boot"
-      - "tce"
-      - "run"
+      - "node"
+      - "up"
     healthcheck:
-      test: ./topos tce push-peer-list --node http://localhost:1340 --format json /tmp/shared/peer_ids.json
+      test: ./topos node status --node http://localhost:1340
       interval: 15s
     volumes:
       - shared:/tmp/shared
@@ -41,11 +41,11 @@ services:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     command:
       - "peer"
-      - "tce"
-      - "run"
+      - "node"
+      - "up"
     init: true
     healthcheck:
-      test: ./topos tce push-peer-list --node http://localhost:1340 --format json /tmp/shared/peer_ids.json && ./topos tce status --node http://localhost:1340
+      test: ./topos node status --node http://localhost:1340
       interval: 5s
     volumes:
       - shared:/tmp/shared
