@@ -143,6 +143,10 @@ services:
     volumes:
       - contracts:/contracts
       - incal-data:/data
+      - ./node_config/node/test/config.toml:/tmp/node_config/node/test/config.toml
+      - ./node_config/node/test/libp2p/:/tmp/node_config/node/test/libp2p/:ro
+      - ./node_config/node/test/consensus/:/tmp/node_config/node/test/consensus/:ro
+      - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos/genesis.json
     depends_on:
       tce-boot:
         condition: service_healthy
@@ -154,7 +158,7 @@ services:
     command: bash -c "
       source /contracts/.env &&
       export SUBNET_CONTRACT_ADDRESS=$(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS) &&
-      init.sh boot node up"
+      topos node up --name test --home /tmp/node_config"
     environment:
       - RUST_LOG=info,topos=debug
       - TOOLCHAIN_VERSION=stable

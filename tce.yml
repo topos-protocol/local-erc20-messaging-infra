@@ -3,19 +3,20 @@ services:
   tce-boot:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     init: true
-    command:
-      - "boot"
-      - "node"
-      - "up"
+    command: node up --name boot --home /tmp/node_config
     healthcheck:
       test: ./topos node status --node http://localhost:1340
       interval: 15s
     volumes:
       - shared:/tmp/shared
+      - ./node_config/node/boot/config.toml:/tmp/node_config/node/boot/config.toml:ro
+      - ./node_config/node/boot/libp2p/:/tmp/node_config/node/boot/libp2p/:ro
+      - ./node_config/node/boot/consensus/:/tmp/node_config/node/boot/consensus/:ro
+      - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos/genesis.json:ro
     ports:
       - "9090"
       - "1340:1340"
-      - "4000:4000"
+      - "4030:4030"
     environment:
       - RUST_LOG=info,topos=info
       - TOOLCHAIN_VERSION=stable
@@ -39,16 +40,17 @@ services:
 
   tce-peer:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
-    command:
-      - "peer"
-      - "node"
-      - "up"
+    command: node up --name test --home /tmp/node_config --no-edge-process
     init: true
     healthcheck:
       test: ./topos node status --node http://localhost:1340
       interval: 5s
     volumes:
       - shared:/tmp/shared
+      - ./node_config/node/test/config.toml:/tmp/node_config/node/test/config.toml
+      - ./node_config/node/test/libp2p/:/tmp/node_config/node/test/libp2p/:ro
+      - ./node_config/node/test/consensus/:/tmp/node_config/node/test/consensus/:ro
+      - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos/genesis.json
     depends_on:
       tce-boot:
         condition: service_healthy
