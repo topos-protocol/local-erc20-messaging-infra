@@ -3,7 +3,7 @@ services:
   tce-boot:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     init: true
-    command: node up --name boot --home /tmp/node_config
+    command: node up --name boot --home /tmp/node_config --no-edge-process
     healthcheck:
       test: ./topos node status --node http://localhost:1340
       interval: 15s

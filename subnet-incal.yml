@@ -158,7 +158,7 @@ services:
     command: bash -c "
       source /contracts/.env &&
       export SUBNET_CONTRACT_ADDRESS=$(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS) &&
-      topos node up --name test --home /tmp/node_config"
+      topos node up --name test --home /tmp/node_config --no-edge-process"
     environment:
       - RUST_LOG=info,topos=debug
       - TOOLCHAIN_VERSION=stable
