@@ -19,7 +19,7 @@ services:
       retries: 5
       start_period: 5s
 
-  tce-boot:
+  boot:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     init: true
     command:
@@ -49,7 +49,7 @@ services:
       - "3000:3000"
       - "4030:4030"
     environment:
-      - RUST_LOG=topos=info,topos_tce_storage=info,topos_tce_synchronizer=info
+      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
       - TOOLCHAIN_VERSION=stable
       - RUST_BACKTRACE=full
       - TCE_DB_PATH=/tmp/default-db
@@ -69,7 +69,7 @@ services:
     networks:
       - local-erc20-messaging-infra-docker
 
-  tce-peer:
+  peer:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     command: 
       - "peer"
@@ -91,7 +91,7 @@ services:
     depends_on:
       init:
         condition: service_completed_successfully
-      tce-boot:
+      boot:
         condition: service_started
     ports:
       - "9090"
@@ -102,7 +102,7 @@ services:
       replicas: 4
     environment:
       - LOCAL_TEST_NET=true
-      - RUST_LOG=topos=info,topos_tce_storage=info,topos_tce_synchronizer=info
+      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
       - TCE_DB_PATH=/tmp/default-db
       - TCE_API_ADDR=0.0.0.0:1340
       - TCE_GRAPHQL_API_ADDR=0.0.0.0:4000

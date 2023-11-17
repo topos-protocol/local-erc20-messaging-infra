@@ -146,7 +146,7 @@ services:
       - ./node_config/node/test/config.toml:/tmp/node_config/node/test/config.toml
       - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos/genesis.json
     depends_on:
-      tce-boot:
+      boot:
         condition: service_started
       contracts-topos:
         condition: service_completed_successfully
