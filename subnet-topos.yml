@@ -161,7 +161,7 @@ services:
       - "9090"
       - "1340"
       - "3000"
-      - "4030"        
+      - "4030"
     command: bash -c "
       source /contracts/.env &&
       echo Topos core contract address=$(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS) &&
