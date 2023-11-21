@@ -7,11 +7,3 @@ subnet = "topos"
 subnet-contract-address = "0x4fD352f266E184eB369f9B6C94Ee838577547688"
 subnet-jsonrpc-http = "http://topos-node-1:8545"
 tce-grpc-endpoint = "http://infra-boot-1:1340"
-
-[tce]
-db-path = "tce_rocksdb"
-graphql-api-addr = "0.0.0.0:4030"
-grpc-api-addr = "0.0.0.0:1340"
-libp2p-api-addr = "0.0.0.0:9090"
-metrics-api-addr = "0.0.0.0:3000"
-
