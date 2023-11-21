@@ -19,7 +19,7 @@ services:
       retries: 5
       start_period: 5s
 
-  boot:
+  tce-boot:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     init: true
     command:
@@ -63,7 +63,7 @@ services:
     networks:
       - local-erc20-messaging-infra-docker
 
-  peer:
+  tce-peer:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     command: 
       - "peer"
