@@ -51,11 +51,6 @@ services:
       - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
       - TOOLCHAIN_VERSION=stable
       - RUST_BACKTRACE=full
-      - TCE_DB_PATH=/tmp/default-db
-      - TCE_API_ADDR=0.0.0.0:1340
-      - TCE_GRAPHQL_API_ADDR=0.0.0.0:4030
-      - TCE_METRICS_API_ADDR=0.0.0.0:3000
-      - TCE_LOCAL_KS=1 # 12D3KooWRhFCXBhmsMnur3up3vJsDoqWh4c39PKXgSWwzAzDHNLn
       - TOPOS_OTLP_SERVICE_NAME=local-tce-boot-node
       - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.topos.technology
       - TCE_ECHO_SAMPLE_SIZE=4
@@ -71,6 +66,7 @@ services:
   peer:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     command: 
+      - "peer"
       - "node"
       - "up"
       - "--name"
@@ -86,8 +82,6 @@ services:
       - shared:/tmp/shared
       - ./node_config/node/test/config.toml:/tmp/node_config/node/test/config.toml
       - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos/genesis.json
-      - ./node_config/node/test/libp2p/:/tmp/node_config/node/test/libp2p/:ro
-      - ./node_config/node/test/consensus/:/tmp/node_config/node/test/consensus/:ro
 
     depends_on:
       init:
@@ -100,14 +94,10 @@ services:
       - "3000"
       - "4030"
     deploy:
-      replicas: 4
+      replicas: 14
     environment:
       - LOCAL_TEST_NET=true
       - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
-      - TCE_DB_PATH=/tmp/default-db
-      - TCE_API_ADDR=0.0.0.0:1340
-      - TCE_GRAPHQL_API_ADDR=0.0.0.0:4030
-      - TCE_METRICS_API_ADDR=0.0.0.0:3000
       - TOPOS_OTLP_SERVICE_NAME=local-tce-peer-node
       - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.topos.technology
       - TCE_ECHO_SAMPLE_SIZE=4
