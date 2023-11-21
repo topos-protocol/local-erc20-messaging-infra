@@ -171,22 +171,15 @@ services:
       - RUST_LOG=info,topos=debug
       - TOOLCHAIN_VERSION=stable
       - RUST_BACKTRACE=full
-      - TOPOS_LOCAL_SUBNET_DATA_DIR=/data/data-1
       - TOPOS_OTLP_SERVICE_NAME=local-topos-sequencer
       - TOPOS_OTLP_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com
-      - TCE_DB_PATH=/tmp/default-db
-      - TCE_API_ADDR=0.0.0.0:1340
-      - TCE_GRAPHQL_API_ADDR=0.0.0.0:4030
-      - TCE_METRICS_API_ADDR=0.0.0.0:3000
-      - TOPOS_OTLP_SERVICE_NAME=local-tce-peer-node
-      - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.topos.technology
-      - TCE_ECHO_SAMPLE_SIZE=4
-      - TCE_READY_SAMPLE_SIZE=4
-      - TCE_DELIVERY_SAMPLE_SIZE=4
-      - TCE_ECHO_THRESHOLD=3
-      - TCE_READY_THRESHOLD=1
-      - TCE_DELIVERY_THRESHOLD=2
-      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=3
+      - TCE_ECHO_SAMPLE_SIZE=14
+      - TCE_READY_SAMPLE_SIZE=14
+      - TCE_DELIVERY_SAMPLE_SIZE=14
+      - TCE_ECHO_THRESHOLD=11
+      - TCE_READY_THRESHOLD=6
+      - TCE_DELIVERY_THRESHOLD=10
+      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=7
     networks:
       - local-erc20-messaging-infra-docker
 
