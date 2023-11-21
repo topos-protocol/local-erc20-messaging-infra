@@ -149,7 +149,7 @@ services:
       - ./node_config/node/sequencer-topos/consensus/:/tmp/node_config/node/sequencer-topos/consensus/
       - ./node_config/node/sequencer-topos/libp2p/:/tmp/node_config/node/sequencer-topos/libp2p/
       - ./node_config/node/sequencer-topos/config.toml:/tmp/node_config/node/sequencer-topos/config.toml
-      - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos/genesis.json
+      - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos-sequencer/genesis.json
     depends_on:
       tce-boot:
         condition: service_healthy
