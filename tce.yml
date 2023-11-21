@@ -23,7 +23,6 @@ services:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     init: true
     command:
-      - "boot"
       - "node"
       - "up"
       - "--name"
@@ -72,7 +71,6 @@ services:
   peer:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     command: 
-      - "peer"
       - "node"
       - "up"
       - "--name"
@@ -88,6 +86,9 @@ services:
       - shared:/tmp/shared
       - ./node_config/node/test/config.toml:/tmp/node_config/node/test/config.toml
       - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos/genesis.json
+      - ./node_config/node/test/libp2p/:/tmp/node_config/node/test/libp2p/:ro
+      - ./node_config/node/test/consensus/:/tmp/node_config/node/test/consensus/:ro
+
     depends_on:
       init:
         condition: service_completed_successfully
