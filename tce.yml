@@ -86,7 +86,7 @@ services:
     depends_on:
       init:
         condition: service_completed_successfully
-      boot:
+      tce-boot:
         condition: service_started
     ports:
       - "9090"
