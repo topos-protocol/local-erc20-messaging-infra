@@ -7,4 +7,4 @@ subnet = "topos-sequencer"
 [sequencer]
 subnet-contract-address = "0x4fD352f266E184eB369f9B6C94Ee838577547688"
 subnet-jsonrpc-http = "http://topos-node-1:8545"
-tce-grpc-endpoint = "http://infra-tce-boot-1:1340"
+tce-grpc-endpoint = "http://infra-tce-peer-1:1340"
