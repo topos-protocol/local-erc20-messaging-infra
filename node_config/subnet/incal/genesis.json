@@ -43,6 +43,6 @@
     "burnContractDestinationAddress": "0x0000000000000000000000000000000000000000"
   },
   "bootnodes": [
-    "/dns4/boot/tcp/9090/p2p/16Uiu2HAmGTNGFnvac2RixfEXTutQkvTYcn2BxwbBJref3foS525G"
+    "/dns4/tce-boot/tcp/9090/p2p/16Uiu2HAmGTNGFnvac2RixfEXTutQkvTYcn2BxwbBJref3foS525G"
   ]
 }
