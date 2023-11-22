@@ -1,78 +1,112 @@
 version: "3.3"
 services:
+  init:
+    container_name: init
+    command: sh -c "cp /tmp/libp2p_keys.json /tmp/shared/libp2p_keys.json && \
+                    cp /tmp/validator_bls_keys.json /tmp/shared/validator_bls_keys.json && \
+                    cp /tmp/validator_keys.json /tmp/shared/validator_keys.json && \
+                    chmod a+rwx /tmp/shared/* && ls /tmp && ls /tmp/shared"
+    image: debian:bullseye-slim
+    volumes:
+      - shared:/tmp/shared
+      - ./libp2p_keys.json:/tmp/libp2p_keys.json
+      - ./validator_bls_keys.json:/tmp/validator_bls_keys.json
+      - ./validator_keys.json:/tmp/validator_keys.json
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/shared/libp2p_keys.json"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
   tce-boot:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     init: true
     command:
+      - "node"
+      - "up"
+      - "--name"
       - "boot"
-      - "tce"
-      - "run"
+      - "--home"
+      - "/tmp/node_config"
+      - "--no-edge-process"
     healthcheck:
-      test: ./topos tce push-peer-list --node http://localhost:1340 --format json /tmp/shared/peer_ids.json
+      test: ./topos node status --node http://localhost:1340
       interval: 15s
     volumes:
       - shared:/tmp/shared
+      - ./node_config/node/boot/config.toml:/tmp/node_config/node/boot/config.toml:ro
+      - ./node_config/node/boot/libp2p/:/tmp/node_config/node/boot/libp2p/:ro
+      - ./node_config/node/boot/consensus/:/tmp/node_config/node/boot/consensus/:ro
+      - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos/genesis.json:ro
+    depends_on:
+      init:
+        condition: service_completed_successfully
     ports:
       - "9090"
       - "1340:1340"
-      - "4000:4000"
+      - "3030:3030"
+      - "4030:4030"
     environment:
-      - RUST_LOG=info,topos=info
+      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
       - TOOLCHAIN_VERSION=stable
       - RUST_BACKTRACE=full
-      - TCE_DB_PATH=/tmp/default-db
-      - TCE_API_ADDR=0.0.0.0:1340
-      - TCE_GRAPHQL_API_ADDR=0.0.0.0:4000
-      - TCE_METRICS_API_ADDR=0.0.0.0:4001
-      - TCE_LOCAL_KS=1 # 12D3KooWRhFCXBhmsMnur3up3vJsDoqWh4c39PKXgSWwzAzDHNLn
       - TOPOS_OTLP_SERVICE_NAME=local-tce-boot-node
       - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.topos.technology
-      - TCE_ECHO_SAMPLE_SIZE=4
-      - TCE_READY_SAMPLE_SIZE=4
-      - TCE_DELIVERY_SAMPLE_SIZE=4
-      - TCE_ECHO_THRESHOLD=3
-      - TCE_READY_THRESHOLD=1
-      - TCE_DELIVERY_THRESHOLD=2
-      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=3
+      - TCE_ECHO_SAMPLE_SIZE=14
+      - TCE_READY_SAMPLE_SIZE=14
+      - TCE_DELIVERY_SAMPLE_SIZE=14
+      - TCE_ECHO_THRESHOLD=11
+      - TCE_READY_THRESHOLD=6
+      - TCE_DELIVERY_THRESHOLD=10
+      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=7
     networks:
       - local-erc20-messaging-infra-docker
 
   tce-peer:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
-    command:
+    command: 
       - "peer"
-      - "tce"
-      - "run"
+      - "node"
+      - "up"
+      - "--name"
+      - "test"
+      - "--home"
+      - "/tmp/node_config"
+      - "--no-edge-process"
     init: true
     healthcheck:
-      test: ./topos tce push-peer-list --node http://localhost:1340 --format json /tmp/shared/peer_ids.json && ./topos tce status --node http://localhost:1340
+      test: ./topos node status --node http://localhost:1340
       interval: 5s
     volumes:
       - shared:/tmp/shared
+      - ./node_config/node/test/config.toml:/tmp/node_config/node/test/config.toml
+      - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos/genesis.json
+
     depends_on:
+      init:
+        condition: service_completed_successfully
       tce-boot:
-        condition: service_healthy
+        condition: service_started
     ports:
       - "9090"
       - "1340"
+      - "3030"
+      - "4030"
     deploy:
-      replicas: 4
+      replicas: 14
     environment:
       - LOCAL_TEST_NET=true
-      - RUST_LOG=info,topos=info
-      - TCE_DB_PATH=/tmp/default-db
-      - TCE_API_ADDR=0.0.0.0:1340
-      - TCE_GRAPHQL_API_ADDR=0.0.0.0:4000
-      - TCE_METRICS_API_ADDR=0.0.0.0:4001
+      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
       - TOPOS_OTLP_SERVICE_NAME=local-tce-peer-node
       - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.topos.technology
-      - TCE_ECHO_SAMPLE_SIZE=4
-      - TCE_READY_SAMPLE_SIZE=4
-      - TCE_DELIVERY_SAMPLE_SIZE=4
-      - TCE_ECHO_THRESHOLD=3
-      - TCE_READY_THRESHOLD=1
-      - TCE_DELIVERY_THRESHOLD=2
-      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=3
+      - TCE_ECHO_SAMPLE_SIZE=14
+      - TCE_READY_SAMPLE_SIZE=14
+      - TCE_DELIVERY_SAMPLE_SIZE=14
+      - TCE_ECHO_THRESHOLD=11
+      - TCE_READY_THRESHOLD=6
+      - TCE_DELIVERY_THRESHOLD=10
+      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=7
     networks:
       - local-erc20-messaging-infra-docker
 
