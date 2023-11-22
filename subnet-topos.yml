@@ -146,8 +146,6 @@ services:
     volumes:
       - contracts:/contracts
       - topos-data:/data
-      - ./node_config/node/sequencer-topos/consensus/:/tmp/node_config/node/sequencer-topos/consensus/
-      - ./node_config/node/sequencer-topos/libp2p/:/tmp/node_config/node/sequencer-topos/libp2p/
       - ./node_config/node/sequencer-topos/config.toml:/tmp/node_config/node/sequencer-topos/config.toml
       - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos-sequencer/genesis.json
     depends_on:
@@ -158,13 +156,14 @@ services:
     entrypoint: ""
     command: bash -c "
       source /contracts/.env &&
-      echo Topos core contract address=$(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS) &&
+      cp -vr /data/data-1/consensus /tmp/node_config/node/sequencer-topos/consensus &&
+      cp -vr /data/data-1/libp2p /tmp/node_config/node/sequencer-topos/libp2p &&
+      echo Topos core contract address=$(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS), set manually in config &&
       topos node up --name sequencer-topos --home /tmp/node_config --no-edge-process"
     environment:
       - RUST_LOG=info,topos=debug
       - TOOLCHAIN_VERSION=stable
       - RUST_BACKTRACE=full
-      - TOPOS_LOCAL_SUBNET_DATA_DIR=/data/data-1
       - TOPOS_OTLP_SERVICE_NAME=local-topos-sequencer
       - TOPOS_OTLP_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com
     networks:

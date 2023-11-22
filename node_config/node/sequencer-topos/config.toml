@@ -1,5 +1,5 @@
 [base]
-name = "test"
+name = "sequencer-topos"
 role = "sequencer"
 # Replace that by `topos` when we have a solution to run only sequencer
 subnet = "topos-sequencer"
