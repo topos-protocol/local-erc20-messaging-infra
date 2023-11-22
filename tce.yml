@@ -45,7 +45,7 @@ services:
     ports:
       - "9090"
       - "1340:1340"
-      - "3000:3000"
+      - "3030:3030"
       - "4030:4030"
     environment:
       - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
@@ -91,7 +91,7 @@ services:
     ports:
       - "9090"
       - "1340"
-      - "3000"
+      - "3030"
       - "4030"
     deploy:
       replicas: 14
