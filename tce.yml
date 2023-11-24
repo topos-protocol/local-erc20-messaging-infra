@@ -5,10 +5,12 @@ services:
     command: sh -c "cp /tmp/libp2p_keys.json /tmp/shared/libp2p_keys.json && \
                     cp /tmp/validator_bls_keys.json /tmp/shared/validator_bls_keys.json && \
                     cp /tmp/validator_keys.json /tmp/shared/validator_keys.json && \
-                    chmod a+rwx /tmp/shared/* && ls /tmp && ls /tmp/shared"
+                    chmod a+rwx /tmp/shared/* && ls /tmp && ls /tmp/shared && \
+                    cp -v /topos-data/genesis.json /tmp/shared/genesis.json"
     image: debian:bullseye-slim
     volumes:
       - shared:/tmp/shared
+      - topos-data:/topos-data
       - ./libp2p_keys.json:/tmp/libp2p_keys.json
       - ./validator_bls_keys.json:/tmp/validator_bls_keys.json
       - ./validator_keys.json:/tmp/validator_keys.json
@@ -18,27 +20,26 @@ services:
       timeout: 5s
       retries: 5
       start_period: 5s
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully      
 
   tce-boot:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     init: true
-    command:
-      - "node"
-      - "up"
-      - "--name"
-      - "boot"
-      - "--home"
-      - "/tmp/node_config"
-      - "--no-edge-process"
+    command: bash -c "
+      mkdir -p /tmp/node_config/subnet/topos &&
+      cp -v /tmp/shared/genesis.json /tmp/node_config/subnet/topos/genesis.json &&      
+      topos node up --name boot --home /tmp/node_config --no-edge-process"
     healthcheck:
       test: ./topos node status --node http://localhost:1340
       interval: 15s
+    entrypoint: ""      
     volumes:
       - shared:/tmp/shared
       - ./node_config/node/boot/config.toml:/tmp/node_config/node/boot/config.toml:ro
       - ./node_config/node/boot/libp2p/:/tmp/node_config/node/boot/libp2p/:ro
       - ./node_config/node/boot/consensus/:/tmp/node_config/node/boot/consensus/:ro
-      - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos/genesis.json:ro
     depends_on:
       init:
         condition: service_completed_successfully
@@ -81,7 +82,6 @@ services:
     volumes:
       - shared:/tmp/shared
       - ./node_config/node/test/config.toml:/tmp/node_config/node/test/config.toml
-      - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos/genesis.json
 
     depends_on:
       init:

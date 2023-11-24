@@ -9,6 +9,7 @@ services:
     environment:
       - CHAIN_ID=${INCAL_CHAIN_ID}
       - BOOTNODE_DOMAIN_NAME=incal-node-1
+      - NUMBER_OF_NODES=4
     depends_on:
       contracts-init:
         condition: service_completed_successfully
@@ -144,7 +145,6 @@ services:
       - contracts:/contracts
       - incal-data:/data
       - ./node_config/node/sequencer-incal/config.toml:/tmp/node_config/node/sequencer-incal/config.toml
-      - ./node_config/subnet/incal/genesis.json:/tmp/node_config/subnet/incal/genesis.json
     depends_on:
       tce-boot:
         condition: service_healthy
@@ -157,6 +157,8 @@ services:
       source /contracts/.env &&
       cp -vr /data/data-1/consensus /tmp/node_config/node/sequencer-incal/consensus &&
       cp -vr /data/data-1/libp2p /tmp/node_config/node/sequencer-incal/libp2p &&
+      mkdir -p /tmp/node_config/subnet/incal &&
+      cp -vr /data/genesis.json /tmp/node_config/subnet/incal/genesis.json &&
       echo Topos core contract address=$(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS), set manually in config &&
       topos node up --name sequencer-incal --home /tmp/node_config --no-edge-process"
     environment:

@@ -9,6 +9,7 @@ services:
     environment:
       - CHAIN_ID=${TOPOS_CHAIN_ID}
       - BOOTNODE_DOMAIN_NAME=topos-node-1
+      - NUMBER_OF_NODES=4      
     depends_on:
       contracts-init:
         condition: service_completed_successfully
@@ -158,6 +159,8 @@ services:
       source /contracts/.env &&
       cp -vr /data/data-1/consensus /tmp/node_config/node/sequencer-topos/consensus &&
       cp -vr /data/data-1/libp2p /tmp/node_config/node/sequencer-topos/libp2p &&
+      mkdir -p /tmp/node_config/subnet/topos-sequencer/ &&
+      cp -vr /data/genesis.json /tmp/node_config/subnet/topos-sequencer/genesis.json &&      
       echo Topos core contract address=$(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS), set manually in config &&
       topos node up --name sequencer-topos --home /tmp/node_config --no-edge-process"
     environment:
