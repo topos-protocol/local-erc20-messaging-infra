@@ -9,7 +9,7 @@ services:
     environment:
       - CHAIN_ID=${TOPOS_CHAIN_ID}
       - BOOTNODE_DOMAIN_NAME=topos-node-1
-      - NUMBER_OF_NODES=5      
+      - NUMBER_OF_NODES=15      
     depends_on:
       contracts-init:
         condition: service_completed_successfully
@@ -145,6 +145,290 @@ services:
       - "server"
       - "--data-dir"
       - "/data/data-5"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--price-limit"
+      - ${PRICE_LIMIT}
+      - "--seal"
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    restart: on-failure
+    networks:
+      - local-erc20-messaging-infra-docker      
+
+
+  topos-node-6:
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-6
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-6"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--price-limit"
+      - ${PRICE_LIMIT}
+      - "--seal"
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    restart: on-failure
+    networks:
+      - local-erc20-messaging-infra-docker      
+
+  topos-node-7:
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-7
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-7"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--price-limit"
+      - ${PRICE_LIMIT}
+      - "--seal"
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    restart: on-failure
+    networks:
+      - local-erc20-messaging-infra-docker      
+
+  topos-node-8:
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-8
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-8"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--price-limit"
+      - ${PRICE_LIMIT}
+      - "--seal"
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    restart: on-failure
+    networks:
+      - local-erc20-messaging-infra-docker      
+
+  topos-node-9:
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-9
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-9"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--price-limit"
+      - ${PRICE_LIMIT}
+      - "--seal"
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    restart: on-failure
+    networks:
+      - local-erc20-messaging-infra-docker      
+
+  topos-node-10:
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-10
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-10"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--price-limit"
+      - ${PRICE_LIMIT}
+      - "--seal"
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    restart: on-failure
+    networks:
+      - local-erc20-messaging-infra-docker      
+
+  topos-node-11:
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-11
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-11"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--price-limit"
+      - ${PRICE_LIMIT}
+      - "--seal"
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    restart: on-failure
+    networks:
+      - local-erc20-messaging-infra-docker      
+
+  topos-node-12:
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-12
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-12"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--price-limit"
+      - ${PRICE_LIMIT}
+      - "--seal"
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    restart: on-failure
+    networks:
+      - local-erc20-messaging-infra-docker      
+
+
+  topos-node-13:
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-13
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-13"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--price-limit"
+      - ${PRICE_LIMIT}
+      - "--seal"
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    restart: on-failure
+    networks:
+      - local-erc20-messaging-infra-docker      
+
+
+  topos-node-14:
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-14
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-14"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--price-limit"
+      - ${PRICE_LIMIT}
+      - "--seal"
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    restart: on-failure
+    networks:
+      - local-erc20-messaging-infra-docker      
+
+
+  topos-node-15:
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-15
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-15"
       - "--chain"
       - "/data/genesis.json"
       - "--grpc-address"
