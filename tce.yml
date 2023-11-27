@@ -5,12 +5,17 @@ services:
     command: sh -c "chmod a+rwx /tmp && ls /tmp && \
                     mkdir -p /tmp/node_config/subnet/topos &&
                     mkdir -p /tmp/node_config/node &&
+                    mkdir -p /tmp/node_config/node/peer1/ &&
+                    mkdir -p /tmp/node_config/node/peer2/ &&
+                    mkdir -p /tmp/node_config/node/peer3/ &&
+                    mkdir -p /tmp/node_config/node/peer4/ &&
+                    mkdir -p /tmp/node_config/node/peer5/ &&
                     cp -v /topos-data/genesis.json /tmp/node_config/subnet/topos/genesis.json &&
-                    cp -vr /topos-data/data-1 /tmp/node_config/node/peer1 &&
-                    cp -vr /topos-data/data-2 /tmp/node_config/node/peer2 &&
-                    cp -vr /topos-data/data-3 /tmp/node_config/node/peer3 &&
-                    cp -vr /topos-data/data-4 /tmp/node_config/node/peer4 &&
-                    cp -vr /topos-data/data-4 /tmp/node_config/node/peer5"
+                    cp -vr /topos-data/data-1/consensus /tmp/node_config/node/peer1/ &&
+                    cp -vr /topos-data/data-2/consensus /tmp/node_config/node/peer2/ &&
+                    cp -vr /topos-data/data-3/consensus /tmp/node_config/node/peer3/ &&
+                    cp -vr /topos-data/data-4/consensus /tmp/node_config/node/peer4/ &&
+                    cp -vr /topos-data/data-4/consensus /tmp/node_config/node/peer5/"
     image: debian:bullseye-slim
     volumes:
       - shared:/tmp
@@ -41,6 +46,7 @@ services:
     volumes:
       - shared:/tmp/init
       - ./node_config/node/peer/config.toml:/tmp/node_config/node/peer/config.toml
+      - ./node_config/node/peer/libp2p_peer1/libp2p.key:/tmp/node_config/node/peer/libp2p/libp2p.key
     depends_on:
       init:
         condition: service_completed_successfully
@@ -81,6 +87,7 @@ services:
     volumes:
       - shared:/tmp/init
       - ./node_config/node/peer/config.toml:/tmp/node_config/node/peer/config.toml
+      - ./node_config/node/peer/libp2p_peer2/libp2p.key:/tmp/node_config/node/peer/libp2p/libp2p.key
     depends_on:
       init:
         condition: service_completed_successfully
