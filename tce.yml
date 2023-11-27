@@ -2,20 +2,21 @@ version: "3.3"
 services:
   init:
     container_name: init
-    command: sh -c "cp /tmp/libp2p_keys.json /tmp/shared/libp2p_keys.json && \
-                    cp /tmp/validator_bls_keys.json /tmp/shared/validator_bls_keys.json && \
-                    cp /tmp/validator_keys.json /tmp/shared/validator_keys.json && \
-                    chmod a+rwx /tmp/shared/* && ls /tmp && ls /tmp/shared && \
-                    cp -v /topos-data/genesis.json /tmp/shared/genesis.json"
+    command: sh -c "chmod a+rwx /tmp && ls /tmp && \
+                    mkdir -p /tmp/node_config/subnet/topos &&
+                    mkdir -p /tmp/node_config/node &&
+                    cp -v /topos-data/genesis.json /tmp/node_config/subnet/topos/genesis.json &&
+                    cp -vr /topos-data/data-1 /tmp/node_config/node/peer1 &&
+                    cp -vr /topos-data/data-2 /tmp/node_config/node/peer2 &&
+                    cp -vr /topos-data/data-3 /tmp/node_config/node/peer3 &&
+                    cp -vr /topos-data/data-4 /tmp/node_config/node/peer4 &&
+                    cp -vr /topos-data/data-4 /tmp/node_config/node/peer5"
     image: debian:bullseye-slim
     volumes:
-      - shared:/tmp/shared
-      - topos-data:/topos-data
-      - ./libp2p_keys.json:/tmp/libp2p_keys.json
-      - ./validator_bls_keys.json:/tmp/validator_bls_keys.json
-      - ./validator_keys.json:/tmp/validator_keys.json
+      - shared:/tmp
+      - topos-data:/topos-data:ro
     healthcheck:
-      test: ["CMD-SHELL", "test -f /tmp/shared/libp2p_keys.json"]
+      test: ["CMD-SHELL", "test -f /tmp/node_config/subnet/topos/genesis.json"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -24,22 +25,22 @@ services:
       topos-init:
         condition: service_completed_successfully      
 
-  tce-boot:
+  tce-peer-1:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     init: true
+    container_name: tce-peer-1
     command: bash -c "
-      mkdir -p /tmp/node_config/subnet/topos &&
-      cp -v /tmp/shared/genesis.json /tmp/node_config/subnet/topos/genesis.json &&      
-      topos node up --name boot --home /tmp/node_config --no-edge-process"
+      mkdir -p /tmp/node_config/subnet/topos && 
+      cp -rv /tmp/init/node_config/node/peer1/* /tmp/node_config/node/peer/ &&
+      cp -rv /tmp/init/node_config/subnet/topos/genesis.json /tmp/node_config/subnet/topos/ &&
+      topos node up --name peer --home /tmp/node_config --no-edge-process"
     healthcheck:
       test: ./topos node status --node http://localhost:1340
       interval: 15s
     entrypoint: ""      
     volumes:
-      - shared:/tmp/shared
-      - ./node_config/node/boot/config.toml:/tmp/node_config/node/boot/config.toml:ro
-      - ./node_config/node/boot/libp2p/:/tmp/node_config/node/boot/libp2p/:ro
-      - ./node_config/node/boot/consensus/:/tmp/node_config/node/boot/consensus/:ro
+      - shared:/tmp/init
+      - ./node_config/node/peer/config.toml:/tmp/node_config/node/peer/config.toml
     depends_on:
       init:
         condition: service_completed_successfully
@@ -52,63 +53,184 @@ services:
       - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
       - TOOLCHAIN_VERSION=stable
       - RUST_BACKTRACE=full
-      - TOPOS_OTLP_SERVICE_NAME=local-tce-boot-node
+      - TOPOS_OTLP_SERVICE_NAME=local-tce-peer-node
       - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.topos.technology
-      - TCE_ECHO_SAMPLE_SIZE=14
-      - TCE_READY_SAMPLE_SIZE=14
-      - TCE_DELIVERY_SAMPLE_SIZE=14
-      - TCE_ECHO_THRESHOLD=11
-      - TCE_READY_THRESHOLD=6
-      - TCE_DELIVERY_THRESHOLD=10
-      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=7
+      - TCE_ECHO_SAMPLE_SIZE=4
+      - TCE_READY_SAMPLE_SIZE=4
+      - TCE_DELIVERY_SAMPLE_SIZE=4
+      - TCE_ECHO_THRESHOLD=3
+      - TCE_READY_THRESHOLD=1
+      - TCE_DELIVERY_THRESHOLD=2
     networks:
       - local-erc20-messaging-infra-docker
 
-  tce-peer:
+
+  tce-peer-2:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
-    command: 
-      - "peer"
-      - "node"
-      - "up"
-      - "--name"
-      - "test"
-      - "--home"
-      - "/tmp/node_config"
-      - "--no-edge-process"
     init: true
+    container_name: tce-peer-2
+    command: bash -c "
+      mkdir -p /tmp/node_config/subnet/topos && 
+      cp -rv /tmp/init/node_config/node/peer2/* /tmp/node_config/node/peer/ &&
+      cp -rv /tmp/init/node_config/subnet/topos/genesis.json /tmp/node_config/subnet/topos/ &&
+      topos node up --name peer --home /tmp/node_config --no-edge-process"
     healthcheck:
       test: ./topos node status --node http://localhost:1340
-      interval: 5s
+      interval: 15s
+    entrypoint: ""      
     volumes:
-      - shared:/tmp/shared
-      - ./node_config/node/test/config.toml:/tmp/node_config/node/test/config.toml
-
+      - shared:/tmp/init
+      - ./node_config/node/peer/config.toml:/tmp/node_config/node/peer/config.toml
     depends_on:
       init:
         condition: service_completed_successfully
-      tce-boot:
-        condition: service_started
+      tce-peer-1:
+        condition: service_started        
     ports:
       - "9090"
       - "1340"
       - "3030"
       - "4030"
-    deploy:
-      replicas: 14
     environment:
-      - LOCAL_TEST_NET=true
+      - LOCAL_TEST_NET=true    
       - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
+      - TOOLCHAIN_VERSION=stable
+      - RUST_BACKTRACE=full
       - TOPOS_OTLP_SERVICE_NAME=local-tce-peer-node
       - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.topos.technology
-      - TCE_ECHO_SAMPLE_SIZE=14
-      - TCE_READY_SAMPLE_SIZE=14
-      - TCE_DELIVERY_SAMPLE_SIZE=14
-      - TCE_ECHO_THRESHOLD=11
-      - TCE_READY_THRESHOLD=6
-      - TCE_DELIVERY_THRESHOLD=10
-      - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=7
+      - TCE_ECHO_SAMPLE_SIZE=4
+      - TCE_READY_SAMPLE_SIZE=4
+      - TCE_DELIVERY_SAMPLE_SIZE=4
+      - TCE_ECHO_THRESHOLD=3
+      - TCE_READY_THRESHOLD=1
+      - TCE_DELIVERY_THRESHOLD=2
+      - TCE_EXT_HOST=
     networks:
       - local-erc20-messaging-infra-docker
+
+
+  # tce-peer-3:
+  #   image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
+  #   init: true
+  #   container_name: tce-peer-3
+  #   command: bash -c "
+  #     mkdir -p /tmp/node_config/subnet/topos && 
+  #     cp -rv /tmp/init/node_config/node/peer3/* /tmp/node_config/node/peer/ &&
+  #     cp -rv /tmp/init/node_config/subnet/topos/genesis.json /tmp/node_config/subnet/topos/ &&
+  #     topos node up --name peer --home /tmp/node_config --no-edge-process"
+  #   healthcheck:
+  #     test: ./topos node status --node http://localhost:1340
+  #     interval: 15s
+  #   entrypoint: ""      
+  #   volumes:
+  #     - shared:/tmp/init
+  #     - ./node_config/node/peer/config.toml:/tmp/node_config/node/peer/config.toml
+  #   depends_on:
+  #     init:
+  #       condition: service_completed_successfully
+  #   ports:
+  #     - "9090"
+  #     - "1340"
+  #     - "3030"
+  #     - "4030"
+  #   environment:
+  #     - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
+  #     - TOOLCHAIN_VERSION=stable
+  #     - RUST_BACKTRACE=full
+  #     - TOPOS_OTLP_SERVICE_NAME=local-tce-peer-node
+  #     - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.topos.technology
+  #     - TCE_ECHO_SAMPLE_SIZE=4
+  #     - TCE_READY_SAMPLE_SIZE=4
+  #     - TCE_DELIVERY_SAMPLE_SIZE=4
+  #     - TCE_ECHO_THRESHOLD=3
+  #     - TCE_READY_THRESHOLD=1
+  #     - TCE_DELIVERY_THRESHOLD=2
+  #     - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=3
+  #   networks:
+  #     - local-erc20-messaging-infra-docker
+
+
+
+  # tce-peer-4:
+  #   image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
+  #   init: true
+  #   container_name: tce-peer-4
+  #   command: bash -c "
+  #     mkdir -p /tmp/node_config/subnet/topos && 
+  #     cp -rv /tmp/init/node_config/node/peer4/* /tmp/node_config/node/peer/ &&
+  #     cp -rv /tmp/init/node_config/subnet/topos/genesis.json /tmp/node_config/subnet/topos/ &&
+  #     topos node up --name peer --home /tmp/node_config --no-edge-process"
+  #   healthcheck:
+  #     test: ./topos node status --node http://localhost:1340
+  #     interval: 15s
+  #   entrypoint: ""      
+  #   volumes:
+  #     - shared:/tmp/init
+  #     - ./node_config/node/peer/config.toml:/tmp/node_config/node/peer/config.toml
+  #   depends_on:
+  #     init:
+  #       condition: service_completed_successfully
+  #   ports:
+  #     - "9090"
+  #     - "1340"
+  #     - "3030"
+  #     - "4030"
+  #   environment:
+  #     - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
+  #     - TOOLCHAIN_VERSION=stable
+  #     - RUST_BACKTRACE=full
+  #     - TOPOS_OTLP_SERVICE_NAME=local-tce-peer-node
+  #     - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.topos.technology
+  #     - TCE_ECHO_SAMPLE_SIZE=4
+  #     - TCE_READY_SAMPLE_SIZE=4
+  #     - TCE_DELIVERY_SAMPLE_SIZE=4
+  #     - TCE_ECHO_THRESHOLD=3
+  #     - TCE_READY_THRESHOLD=1
+  #     - TCE_DELIVERY_THRESHOLD=2
+  #     - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=3
+  #   networks:
+  #     - local-erc20-messaging-infra-docker
+
+
+  # tce-peer-5:
+  #     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
+  #     init: true
+  #     container_name: tce-peer-5
+  #     command: bash -c "
+  #       mkdir -p /tmp/node_config/subnet/topos && 
+  #       cp -rv /tmp/init/node_config/node/peer5/* /tmp/node_config/node/peer/ &&
+  #       cp -rv /tmp/init/node_config/subnet/topos/genesis.json /tmp/node_config/subnet/topos/ &&
+  #       topos node up --name peer --home /tmp/node_config --no-edge-process"
+  #     healthcheck:
+  #       test: ./topos node status --node http://localhost:1340
+  #       interval: 15s
+  #     entrypoint: ""      
+  #     volumes:
+  #       - shared:/tmp/init
+  #       - ./node_config/node/peer/config.toml:/tmp/node_config/node/peer/config.toml
+  #     depends_on:
+  #       init:
+  #         condition: service_completed_successfully
+  #     ports:
+  #       - "9090"
+  #       - "1340"
+  #       - "3030"
+  #       - "4030"
+  #     environment:
+  #       - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
+  #       - TOOLCHAIN_VERSION=stable
+  #       - RUST_BACKTRACE=full
+  #       - TOPOS_OTLP_SERVICE_NAME=local-tce-peer-node
+  #       - TOPOS_OTLP_AGENT=https://grpc.otel-collector.telemetry.devnet-1.topos.technology
+  #       - TCE_ECHO_SAMPLE_SIZE=4
+  #       - TCE_READY_SAMPLE_SIZE=4
+  #       - TCE_DELIVERY_SAMPLE_SIZE=4
+  #       - TCE_ECHO_THRESHOLD=3
+  #       - TCE_READY_THRESHOLD=1
+  #       - TCE_DELIVERY_THRESHOLD=2
+  #       - TOPOS_MINIMUM_TCE_CLUSTER_SIZE=3
+  #     networks:
+  #       - local-erc20-messaging-infra-docker      
 
 volumes:
   shared:

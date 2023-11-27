@@ -9,7 +9,7 @@ services:
     environment:
       - CHAIN_ID=${TOPOS_CHAIN_ID}
       - BOOTNODE_DOMAIN_NAME=topos-node-1
-      - NUMBER_OF_NODES=4      
+      - NUMBER_OF_NODES=5      
     depends_on:
       contracts-init:
         condition: service_completed_successfully
@@ -137,6 +137,34 @@ services:
     networks:
       - local-erc20-messaging-infra-docker
 
+  topos-node-5:
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: topos-node-5
+    init: true
+    command:
+      - "server"
+      - "--data-dir"
+      - "/data/data-5"
+      - "--chain"
+      - "/data/genesis.json"
+      - "--grpc-address"
+      - "0.0.0.0:9632"
+      - "--libp2p"
+      - "0.0.0.0:1478"
+      - "--jsonrpc"
+      - "0.0.0.0:8545"
+      - "--price-limit"
+      - ${PRICE_LIMIT}
+      - "--seal"
+    depends_on:
+      topos-init:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    restart: on-failure
+    networks:
+      - local-erc20-messaging-infra-docker      
+
   topos-sequencer:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     container_name: topos-sequencer
@@ -150,7 +178,7 @@ services:
       - ./node_config/node/sequencer-topos/config.toml:/tmp/node_config/node/sequencer-topos/config.toml
       - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos-sequencer/genesis.json
     depends_on:
-      tce-boot:
+      tce-peer-1:
         condition: service_healthy
       contracts-topos:
         condition: service_completed_successfully
