@@ -176,7 +176,6 @@ services:
       - contracts:/contracts
       - topos-data:/data
       - ./node_config/node/sequencer-topos/config.toml:/tmp/node_config/node/sequencer-topos/config.toml
-      - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos-sequencer/genesis.json
     depends_on:
       tce-peer-1:
         condition: service_healthy
