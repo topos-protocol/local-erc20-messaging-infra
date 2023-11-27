@@ -25,10 +25,11 @@ services:
       - INCAL_CHAIN_ID=${INCAL_CHAIN_ID}
       - INCAL_LOGO_URL=${INCAL_LOGO_URL}
     command: bash -c "
-      npx ts-node scripts/deploy-topos-msg-protocol http://topos-node-1:8545 $(cat /data/topos/data-1/consensus/validator.key) > /contracts/.env &&
-      echo export SUBNET_REGISTRATOR_CONTRACT_ADDRESS=$(npx ts-node scripts/deploy-subnet-registrator http://topos-node-1:8545 $(cat /data/topos/data-1/consensus/validator.key) $SUBNET_REGISTRATOR_SALT 4000000) >> /contracts/.env &&
+      printenv &&
+      npx ts-node scripts/deploy-topos-msg-protocol http://topos-node-1:8545 $(cat /data/topos/node/data-1/consensus/validator.key) > /contracts/.env &&
+      echo export SUBNET_REGISTRATOR_CONTRACT_ADDRESS=$(npx ts-node scripts/deploy-subnet-registrator http://topos-node-1:8545 $(cat /data/topos/node/data-1/consensus/validator.key) $SUBNET_REGISTRATOR_SALT 4000000) >> /contracts/.env &&
       source /contracts/.env &&
-      npm run register-subnet http://topos-node-1:8545 $(printenv SUBNET_REGISTRATOR_CONTRACT_ADDRESS) Incal $INCAL_CHAIN_ID http://localhost:$INCAL_HOST_PORT ws://localhost:$INCAL_HOST_PORT/ws INCA $INCAL_LOGO_URL $(cat /data/topos/data-1/consensus/validator.key) $(cat /data/incal/data-1/consensus/validator.key)"
+      npm run register-subnet http://topos-node-1:8545 $(printenv SUBNET_REGISTRATOR_CONTRACT_ADDRESS) Incal $INCAL_CHAIN_ID http://localhost:$INCAL_HOST_PORT ws://localhost:$INCAL_HOST_PORT/ws INCA $INCAL_LOGO_URL $(cat /data/topos/node/data-1/consensus/validator.key) $(cat /data/incal/data-1/consensus/validator.key)"
     volumes:
       - contracts:/contracts
       - topos-data:/data/topos

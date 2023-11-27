@@ -146,7 +146,7 @@ services:
       - ./node_config/node/sequencer-incal/config.toml:/tmp/node_config/node/sequencer-incal/config.toml
       - ./node_config/subnet/incal/genesis.json:/tmp/node_config/subnet/incal/genesis.json
     depends_on:
-      tce-boot:
+      topos-node-1:
         condition: service_healthy
       contracts-topos:
         condition: service_completed_successfully
