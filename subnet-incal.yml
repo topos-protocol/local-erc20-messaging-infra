@@ -146,7 +146,7 @@ services:
       - incal-data:/data
       - ./node_config/node/sequencer-incal/config.toml:/tmp/node_config/node/sequencer-incal/config.toml
     depends_on:
-      tce-peer-1:
+      tce-peer-2:
         condition: service_healthy
       contracts-topos:
         condition: service_completed_successfully
