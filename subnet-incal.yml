@@ -144,7 +144,6 @@ services:
       - contracts:/contracts
       - incal-data:/data
       - ./node_config/node/sequencer-incal/config.toml:/tmp/node_config/node/sequencer-incal/config.toml
-      - ./node_config/subnet/incal/genesis.json:/tmp/node_config/subnet/incal/genesis.json
     depends_on:
       topos-node-1:
         condition: service_healthy
