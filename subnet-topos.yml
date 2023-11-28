@@ -1,9 +1,9 @@
 version: "3.3"
 services:
   # Create keys and genesis
-  topos-init:
+  keystore-init:
     image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
-    container_name: topos-init
+    container_name: keystore-init
     init: true
     command: ["init", "ibft"]
     environment:
@@ -18,121 +18,188 @@ services:
     networks:
       - local-erc20-messaging-infra-docker
 
+  # Install the edge binary in the current volume
+  install-edge:
+    image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
+    container_name: install-edge
+    command:
+      - "setup"
+      - "subnet"
+      - "--path"
+      - "/data/"
+      - "--release"
+      - "v${TOPOS_EDGE_VERSION}"
+    environment:
+      - TOPOS_EDGE_VERSION=${TOPOS_EDGE_VERSION}
+    volumes:
+      - topos-data:/data
+
+  topos-init:
+    container_name: topos-init
+    command: sh -c "mkdir -p /data/node/ -p /data/subnet/topos && \
+      mv /data/data-1 /data/node/node-1 && \
+      mv /data/data-2 /data/node/node-2 && \
+      mv /data/data-3 /data/node/node-3 && \
+      mv /data/data-4 /data/node/node-4 && \
+      mv /data/genesis.json /data/subnet/topos/genesis.json && \
+      chmod a+rwx /data/* && ls -lRa /data && cat /data/subnet/topos/genesis.json"
+    image: debian:bullseye-slim
+    depends_on:
+      keystore-init:
+        condition: service_completed_successfully
+      install-edge:
+        condition: service_completed_successfully
+    volumes:
+      - topos-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /data/subnet/topos/genesis.json"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - local-erc20-messaging-infra-docker
+
   topos-node-1:
-    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     container_name: topos-node-1
     init: true
     command:
-      - "server"
-      - "--data-dir"
-      - "/data/data-1"
-      - "--chain"
-      - "/data/genesis.json"
-      - "--grpc-address"
-      - "0.0.0.0:9632"
-      - "--libp2p"
-      - "0.0.0.0:1478"
-      - "--jsonrpc"
-      - "0.0.0.0:8545"
-      - "--price-limit"
-      - ${PRICE_LIMIT}
-      - "--seal"
+      - "node"
+      - "--edge-path"
+      - "/data"
+      - "up"
+      - "--name"
+      - "node-1"
+      - "--home"
+      - "/data"
     healthcheck:
-      test: ./polygon-edge status | awk '/Number/ {print $$NF}' | tr -d '\n' | grep -v -w "0"
-      interval: 5s
+      test: ./topos node status --node http://localhost:1340
+      interval: 15s
       retries: 10
     depends_on:
       topos-init:
         condition: service_completed_successfully
     volumes:
       - topos-data:/data
+      - ./node_config/node/boot/config.toml:/data/node/node-1/config.toml:ro
     restart: on-failure
     ports:
       - "${TOPOS_HOST_PORT}:8545"
+      - "9090"
+      - "1340:1340"
+      - "3030:3030"
+      - "4030:4030"
+    environment:
+      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug,topos::edge=off
     networks:
       - local-erc20-messaging-infra-docker
 
   topos-node-2:
-    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     container_name: topos-node-2
     init: true
     command:
-      - "server"
-      - "--data-dir"
-      - "/data/data-2"
-      - "--chain"
-      - "/data/genesis.json"
-      - "--grpc-address"
-      - "0.0.0.0:9632"
-      - "--libp2p"
-      - "0.0.0.0:1478"
-      - "--jsonrpc"
-      - "0.0.0.0:8545"
-      - "--price-limit"
-      - ${PRICE_LIMIT}
-      - "--seal"
+      - "node"
+      - "--edge-path"
+      - "/data"
+      - "up"
+      - "--name"
+      - "node-2"
+      - "--home"
+      - "/data"
+    healthcheck:
+      test: ./topos node status --node http://localhost:1340
+      interval: 15s
+      retries: 10
     depends_on:
       topos-init:
         condition: service_completed_successfully
+      topos-node-1:
+        condition: service_started
     volumes:
       - topos-data:/data
+      - ./node_config/node/boot/config.toml:/data/node/node-2/config.toml:ro
     restart: on-failure
+    ports:
+      - "9090"
+      - "1340"
+      - "3030"
+      - "4030"
+    environment:
+      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug,topos::edge=off
     networks:
       - local-erc20-messaging-infra-docker
 
   topos-node-3:
-    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     container_name: topos-node-3
     init: true
     command:
-      - "server"
-      - "--data-dir"
-      - "/data/data-3"
-      - "--chain"
-      - "/data/genesis.json"
-      - "--grpc-address"
-      - "0.0.0.0:9632"
-      - "--libp2p"
-      - "0.0.0.0:1478"
-      - "--jsonrpc"
-      - "0.0.0.0:8545"
-      - "--price-limit"
-      - ${PRICE_LIMIT}
-      - "--seal"
+      - "node"
+      - "--edge-path"
+      - "/data"
+      - "up"
+      - "--name"
+      - "node-3"
+      - "--home"
+      - "/data"
+    healthcheck:
+      test: ./topos node status --node http://localhost:1340
+      interval: 15s
+      retries: 10
     depends_on:
       topos-init:
         condition: service_completed_successfully
+      topos-node-1:
+        condition: service_started
     volumes:
       - topos-data:/data
+      - ./node_config/node/boot/config.toml:/data/node/node-3/config.toml:ro
     restart: on-failure
+    ports:
+      - "9090"
+      - "1340"
+      - "3030"
+      - "4030"
+    environment:
+      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug,topos::edge=off
     networks:
       - local-erc20-messaging-infra-docker
 
   topos-node-4:
-    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     container_name: topos-node-4
     init: true
     command:
-      - "server"
-      - "--data-dir"
-      - "/data/data-4"
-      - "--chain"
-      - "/data/genesis.json"
-      - "--grpc-address"
-      - "0.0.0.0:9632"
-      - "--libp2p"
-      - "0.0.0.0:1478"
-      - "--jsonrpc"
-      - "0.0.0.0:8545"
-      - "--price-limit"
-      - ${PRICE_LIMIT}
-      - "--seal"
+      - "node"
+      - "--edge-path"
+      - "/data"
+      - "up"
+      - "--name"
+      - "node-4"
+      - "--home"
+      - "/data"
+    healthcheck:
+      test: ./topos node status --node http://localhost:1340
+      interval: 15s
+      retries: 10
     depends_on:
       topos-init:
         condition: service_completed_successfully
+      topos-node-1:
+        condition: service_started
     volumes:
       - topos-data:/data
+      - ./node_config/node/boot/config.toml:/data/node/node-4/config.toml:ro
     restart: on-failure
+    ports:
+      - "9090"
+      - "1340"
+      - "3030"
+      - "4030"
+    environment:
+      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug,topos::edge=off
     networks:
       - local-erc20-messaging-infra-docker
 
@@ -146,20 +213,21 @@ services:
     volumes:
       - contracts:/contracts
       - topos-data:/data
-      - ./node_config/node/sequencer-topos/config.toml:/tmp/node_config/node/sequencer-topos/config.toml
-      - ./node_config/subnet/topos/genesis.json:/tmp/node_config/subnet/topos-sequencer/genesis.json
+      - ./node_config/node/sequencer-topos/config.toml:/data/node/sequencer-topos/config.toml
     depends_on:
-      tce-boot:
+      topos-node-1:
         condition: service_healthy
       contracts-topos:
         condition: service_completed_successfully
     entrypoint: ""
     command: bash -c "
       source /contracts/.env &&
-      cp -vr /data/data-1/consensus /tmp/node_config/node/sequencer-topos/consensus &&
-      cp -vr /data/data-1/libp2p /tmp/node_config/node/sequencer-topos/libp2p &&
-      echo Topos core contract address=$(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS), set manually in config &&
-      topos node up --name sequencer-topos --home /tmp/node_config --no-edge-process"
+      mkdir -p /data/node/sequencer-topos/consensus -p /data/node/sequencer-topos/libp2p -p /data/subnet/topos-sequencer/ &&
+      cp -vr /data/node/node-1/consensus /data/node/sequencer-topos/ &&
+      cp -vr /data/node/node-1/libp2p /data/node/sequencer-topos/ &&
+      cp -vr /data/subnet/topos/genesis.json /data/subnet/topos-sequencer/genesis.json &&
+      echo \"Topos Core contract address:\" $(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS), set manually in config &&
+      topos node up --name sequencer-topos --home /data/ --no-edge-process"
     environment:
       - RUST_LOG=info,topos=debug
       - TOOLCHAIN_VERSION=stable
