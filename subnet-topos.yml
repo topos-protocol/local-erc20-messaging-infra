@@ -37,7 +37,10 @@ services:
   topos-init:
     container_name: topos-init
     command: sh -c "mkdir -p /data/node/ -p /data/subnet/topos && \
-      mv /data/data-* /data/node/ && \
+      mv /data/data-1 /data/node/node-1 && \
+      mv /data/data-2 /data/node/node-2 && \
+      mv /data/data-3 /data/node/node-3 && \
+      mv /data/data-4 /data/node/node-4 && \
       mv /data/genesis.json /data/subnet/topos/genesis.json && \
       chmod a+rwx /data/* && ls -lRa /data && cat /data/subnet/topos/genesis.json"
     image: debian:bullseye-slim
@@ -220,8 +223,8 @@ services:
     command: bash -c "
       source /contracts/.env &&
       mkdir -p /data/node/sequencer-topos/consensus -p /data/node/sequencer-topos/libp2p -p /data/subnet/topos-sequencer/ &&
-      cp -vr /data/node/data-1/consensus /data/node/sequencer-topos/ &&
-      cp -vr /data/node/data-1/libp2p /data/node/sequencer-topos/ &&
+      cp -vr /data/node/node-1/consensus /data/node/sequencer-topos/ &&
+      cp -vr /data/node/node-1/libp2p /data/node/sequencer-topos/ &&
       cp -vr /data/subnet/topos/genesis.json /data/subnet/topos-sequencer/genesis.json &&
       echo \"Topos Core contract address:\" $(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS), set manually in config &&
       topos node up --name sequencer-topos --home /data/ --no-edge-process"
