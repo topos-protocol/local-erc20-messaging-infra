@@ -156,6 +156,8 @@ services:
       source /contracts/.env &&
       cp -vr /data/data-1/consensus /tmp/node_config/node/sequencer-incal/consensus &&
       cp -vr /data/data-1/libp2p /tmp/node_config/node/sequencer-incal/libp2p &&
+      mkdir -p /tmp/node_config/subnet/incal/ &&
+      cp -v /data/genesis.json /tmp/node_config/subnet/incal/genesis.json  &&
       echo Topos core contract address=$(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS), set manually in config &&
       topos node up --name sequencer-incal --home /tmp/node_config --no-edge-process"
     environment:
