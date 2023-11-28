@@ -67,7 +67,7 @@ services:
       - "/data"
       - "up"
       - "--name"
-      - "data-1"
+      - "node-1"
       - "--home"
       - "/data"
     healthcheck:
@@ -79,7 +79,7 @@ services:
         condition: service_completed_successfully
     volumes:
       - topos-data:/data
-      - ./node_config/node/boot/config.toml:/data/node/data-1/config.toml:ro
+      - ./node_config/node/boot/config.toml:/data/node/node-1/config.toml:ro
     restart: on-failure
     ports:
       - "${TOPOS_HOST_PORT}:8545"
@@ -102,7 +102,7 @@ services:
       - "/data"
       - "up"
       - "--name"
-      - "data-2"
+      - "node-2"
       - "--home"
       - "/data"
     healthcheck:
@@ -116,7 +116,7 @@ services:
         condition: service_started
     volumes:
       - topos-data:/data
-      - ./node_config/node/boot/config.toml:/data/node/data-2/config.toml:ro
+      - ./node_config/node/boot/config.toml:/data/node/node-2/config.toml:ro
     restart: on-failure
     ports:
       - "9090"
@@ -138,7 +138,7 @@ services:
       - "/data"
       - "up"
       - "--name"
-      - "data-3"
+      - "node-3"
       - "--home"
       - "/data"
     healthcheck:
@@ -152,7 +152,7 @@ services:
         condition: service_started
     volumes:
       - topos-data:/data
-      - ./node_config/node/boot/config.toml:/data/node/data-3/config.toml:ro
+      - ./node_config/node/boot/config.toml:/data/node/node-3/config.toml:ro
     restart: on-failure
     ports:
       - "9090"
@@ -174,7 +174,7 @@ services:
       - "/data"
       - "up"
       - "--name"
-      - "data-4"
+      - "node-4"
       - "--home"
       - "/data"
     healthcheck:
@@ -188,7 +188,7 @@ services:
         condition: service_started
     volumes:
       - topos-data:/data
-      - ./node_config/node/boot/config.toml:/data/node/data-4/config.toml:ro
+      - ./node_config/node/boot/config.toml:/data/node/node-4/config.toml:ro
     restart: on-failure
     ports:
       - "9090"
