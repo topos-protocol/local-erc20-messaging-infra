@@ -91,7 +91,7 @@ services:
       - "3030:3030"
       - "4030:4030"
     environment:
-      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug,topos::edge=off
+      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
     networks:
       - local-erc20-messaging-infra-docker
 
@@ -127,7 +127,7 @@ services:
       - "3030"
       - "4030"
     environment:
-      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug,topos::edge=off
+      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
     networks:
       - local-erc20-messaging-infra-docker
 
@@ -163,7 +163,7 @@ services:
       - "3030"
       - "4030"
     environment:
-      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug,topos::edge=off
+      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
     networks:
       - local-erc20-messaging-infra-docker
 
@@ -199,7 +199,7 @@ services:
       - "3030"
       - "4030"
     environment:
-      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug,topos::edge=off
+      - RUST_LOG=topos=debug,topos_tce_storage=debug,topos_tce_synchronizer=debug
     networks:
       - local-erc20-messaging-infra-docker
 
