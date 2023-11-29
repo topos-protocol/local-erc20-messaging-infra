@@ -1,0 +1,37 @@
+version: "3.3"
+services:
+  fuji-sequencer:
+    image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
+    container_name: fuji-sequencer
+    init: true
+    volumes:
+      - contracts:/contracts
+      - fuji-data:/data
+      - ./node_config/node/sequencer-fuji/config.toml:/tmp/node_config/node/sequencer-fuji/config.toml
+    depends_on:
+      topos-node-1:
+        condition: service_started
+      contracts-topos:
+        condition: service_completed_successfully
+      contracts-fuji:
+        condition: service_completed_successfully
+    entrypoint: ""
+    command: bash -c "
+      source /contracts/.env &&
+      cp -vr /data/data-1/consensus /tmp/node_config/node/sequencer-fuji/consensus &&
+      cp -vr /data/data-1/libp2p /tmp/node_config/node/sequencer-fuji/libp2p &&
+      mkdir -p /tmp/node_config/subnet/fuji/ &&
+      cp -v /data/genesis.json /tmp/node_config/subnet/fuji/genesis.json  &&
+      echo Topos core contract address=$(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS), set manually in config &&
+      topos node up --name sequencer-fuji --home /tmp/node_config --no-edge-process"
+    environment:
+      - RUST_LOG=info,topos=debug
+      - TOOLCHAIN_VERSION=stable
+      - RUST_BACKTRACE=full
+      - TOPOS_OTLP_SERVICE_NAME=local-fuji-sequencer
+      - TOPOS_OTLP_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com
+    networks:
+      - local-erc20-messaging-infra-docker
+
+volumes:
+  fuji-data:

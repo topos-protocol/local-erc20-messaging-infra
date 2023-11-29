@@ -1,0 +1,9 @@
+[base]
+name = "sequencer-fuji"
+role = "sequencer"
+subnet = "fuji-sequencer"
+
+[sequencer]
+subnet-contract-address = "0xd56dab17bd9b2f8f40d0c6435c3e04d477bd7ad311d749e1a9a7aa20fe2ee40f"
+subnet-jsonrpc-http = "https://api.avax-test.network/ext/bc/C/rpc"
+tce-grpc-endpoint = "http://topos-node-1:1340"
