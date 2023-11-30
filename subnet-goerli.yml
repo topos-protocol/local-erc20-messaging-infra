@@ -1,0 +1,51 @@
+version: "3.3"
+services:
+  # Create keys and genesis
+  goerli-init:
+    image: ghcr.io/topos-protocol/polygon-edge:${TOPOS_EDGE_VERSION}
+    container_name: goerli-init
+    init: true
+    command: ["init", "ibft"]
+    environment:
+      - BOOTNODE_DOMAIN_NAME=goerli-node-1
+    depends_on:
+      contracts-init:
+        condition: service_completed_successfully
+    volumes:
+      - goerli-data:/data
+      - contracts:/contracts
+    networks:
+      - local-erc20-messaging-infra-docker
+
+  goerli-sequencer:
+    image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
+    container_name: goerli-sequencer
+    init: true
+    volumes:
+      - contracts:/contracts
+      - goerli-data:/data
+      - ./node_config/node/sequencer-goerli/config.toml:/tmp/node_config/node/sequencer-goerli/config.toml
+    depends_on:
+      topos-node-1:
+        condition: service_started
+      contracts-topos:
+        condition: service_completed_successfully
+    entrypoint: ""
+    command: bash -c "
+      source /contracts/.env &&
+      cp -vr /data/data-1/libp2p /tmp/node_config/node/sequencer-goerli/libp2p &&
+      mkdir -p /tmp/node_config/subnet/goerli/ &&
+      cp -v /data/genesis.json /tmp/node_config/subnet/goerli/genesis.json  &&
+      echo Topos core contract address=$(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS), set manually in config &&
+      topos node up --name sequencer-goerli --home /tmp/node_config --no-edge-process"
+    environment:
+      - RUST_LOG=info,topos=debug
+      - TOOLCHAIN_VERSION=stable
+      - RUST_BACKTRACE=full
+      - TOPOS_OTLP_SERVICE_NAME=local-goerli-sequencer
+      - TOPOS_OTLP_AGENT=https://otel-collector.telemetry.devnet-1.toposware.com
+    networks:
+      - local-erc20-messaging-infra-docker
+
+volumes:
+  goerli-data:

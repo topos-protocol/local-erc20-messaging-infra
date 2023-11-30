@@ -64,5 +64,26 @@ services:
     networks:
       - local-erc20-messaging-infra-docker
 
+  contracts-goerli:
+    image: ghcr.io/topos-protocol/topos-smart-contracts:${TOPOS_MESSAGING_PROTOCOL_CONTRACTS_VERSION}
+    container_name: contracts-goerli
+    init: true
+    environment:
+      - PRIVATE_KEY=${GOERLI_PRIVATE_KEY}
+      - TOKEN_DEPLOYER_SALT=${TOKEN_DEPLOYER_SALT}
+      - TOPOS_CORE_SALT=${TOPOS_CORE_SALT}
+      - TOPOS_CORE_PROXY_SALT=${TOPOS_CORE_PROXY_SALT}
+      - ERC20_MESSAGING_SALT=${ERC20_MESSAGING_SALT}
+      - SUBNET_REGISTRATOR_SALT=${SUBNET_REGISTRATOR_SALT}
+    command: bash -c "
+      npm run deploy:topos-msg-protocol https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161 $$(cat /data/goerli/data-1/consensus/validator.key)"
+    volumes:
+      - goerli-data:/data/goerli
+    depends_on:
+      goerli-sequencer:
+        condition: service_healthy
+    networks:
+      - local-erc20-messaging-infra-docker
+
 volumes:
   contracts:
