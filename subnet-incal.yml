@@ -71,6 +71,10 @@ services:
       - "--price-limit"
       - ${PRICE_LIMIT}
       - "--seal"
+    healthcheck:
+      test: ./polygon-edge status | awk '/Number/ {print $$NF}' | tr -d '\n' | grep -v -w "0"
+      interval: 5s
+      retries: 10      
     depends_on:
       incal-init:
         condition: service_completed_successfully
@@ -99,6 +103,10 @@ services:
       - "--price-limit"
       - ${PRICE_LIMIT}
       - "--seal"
+    healthcheck:
+      test: ./polygon-edge status | awk '/Number/ {print $$NF}' | tr -d '\n' | grep -v -w "0"
+      interval: 5s
+      retries: 10            
     depends_on:
       incal-init:
         condition: service_completed_successfully
@@ -127,6 +135,10 @@ services:
       - "--price-limit"
       - ${PRICE_LIMIT}
       - "--seal"
+    healthcheck:
+      test: ./polygon-edge status | awk '/Number/ {print $$NF}' | tr -d '\n' | grep -v -w "0"
+      interval: 5s
+      retries: 10            
     depends_on:
       incal-init:
         condition: service_completed_successfully

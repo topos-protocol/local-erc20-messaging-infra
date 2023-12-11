@@ -207,9 +207,6 @@ services:
     image: ghcr.io/topos-protocol/topos:${TOPOS_VERSION}
     container_name: topos-sequencer
     init: true
-    healthcheck:
-      test: ./topos node status --node http://localhost:1340
-      interval: 5s
     volumes:
       - contracts:/contracts
       - topos-data:/data
