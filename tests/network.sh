@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 start_network () {
     echo "Starting local infra network..."
@@ -63,4 +64,3 @@ elif [ $1 = 'is_running' ]; then
 else
     echo "Invalid argument"
     exit 1
-fi

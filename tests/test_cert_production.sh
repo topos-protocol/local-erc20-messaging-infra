@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 
 function get_last_block () {
     local last_block=`docker compose logs $1 | grep -e 'polygon.blockchain' | grep -e 'new block' | \
