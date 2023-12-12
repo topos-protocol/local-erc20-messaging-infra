@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+source $LOCAL_ERC20_HOME/tests/utils.sh
+
 
 function get_last_block () {
     local last_block=`docker compose logs $1 | grep -e 'polygon.blockchain' | grep -e 'new block' | \
@@ -18,19 +20,17 @@ function check_certificate_produced () {
 network_started=0
 
 # Start network if it is not running
-$LOCAL_ERC20_HOME/tests/network.sh is_running
-is_running=$?
+is_running=$(is_network_running)
 if [ $is_running -eq 1 ]; then
     echo "Test network is not running, starting it now..."
-    $LOCAL_ERC20_HOME/tests/network.sh start
+    start_network
     network_started=1
-    sleep 5 # Warn up network
+    sleep 5 # Warm up network
 fi
 
 
 # Perform test
 echo "Executing block cert production test..."
-
 # Get last block number created on the topos polygon edge node
 last_block_topos=$(get_last_block topos-node-1)
 echo "Topos subnet last block: $last_block_topos"
@@ -61,5 +61,5 @@ fi
 # Stop network if started for this test
 if [ $network_started -eq 1 ]; then
     echo "Shutting down network started for this test"
-    $LOCAL_ERC20_HOME/tests/network.sh stop
+    stop_network
 fi
