@@ -74,8 +74,12 @@ services:
       - "--home"
       - "/data"
     healthcheck:
-      test: ./topos node status --node http://localhost:1340
-      interval: 15s
+      test: | 
+        set -e
+        ./topos node status --node http://localhost:1340
+        /data/polygon-edge status | grep 'Current Block Number (base 10) = .[0-9]*'
+      interval: 5s
+      start_period: 1s
       retries: 10
     depends_on:
       topos-init:
@@ -109,14 +113,18 @@ services:
       - "--home"
       - "/data"
     healthcheck:
-      test: ./topos node status --node http://localhost:1340
-      interval: 15s
+      test: |
+        set -e
+        ./topos node status --node http://localhost:1340
+        /data/polygon-edge status | grep 'Current Block Number (base 10) = .[0-9]*'
+      interval: 10s
+      start_period: 1s
       retries: 10
     depends_on:
       topos-init:
         condition: service_completed_successfully
       topos-node-1:
-        condition: service_started
+        condition: service_healthy
     volumes:
       - topos-data:/data
       - ./node_config/node/boot/config.toml:/data/node/node-2/config.toml:ro
@@ -145,14 +153,18 @@ services:
       - "--home"
       - "/data"
     healthcheck:
-      test: ./topos node status --node http://localhost:1340
-      interval: 15s
+      test: | 
+        set -e 
+        ./topos node status --node http://localhost:1340 
+        /data/polygon-edge status | grep 'Current Block Number (base 10) = .[0-9]*'
+      interval: 10s
+      start_period: 1s
       retries: 10
     depends_on:
       topos-init:
         condition: service_completed_successfully
       topos-node-1:
-        condition: service_started
+        condition: service_healthy
     volumes:
       - topos-data:/data
       - ./node_config/node/boot/config.toml:/data/node/node-3/config.toml:ro
@@ -181,17 +193,22 @@ services:
       - "--home"
       - "/data"
     healthcheck:
-      test: ./topos node status --node http://localhost:1340
-      interval: 15s
+      test: | 
+        set -e
+        ./topos node status --node http://localhost:1340
+        /bin/sh /polygon_edge_healthcheck.sh /data
+      interval: 10s
+      start_period: 1s
       retries: 10
     depends_on:
       topos-init:
         condition: service_completed_successfully
       topos-node-1:
-        condition: service_started
+        condition: service_healthy
     volumes:
       - topos-data:/data
       - ./node_config/node/boot/config.toml:/data/node/node-4/config.toml:ro
+      - ./scripts/polygon_edge_healthcheck.sh:/polygon_edge_healthcheck.sh:ro
     restart: on-failure
     ports:
       - "9090"
@@ -212,7 +229,7 @@ services:
       - topos-data:/data
       - ./node_config/node/sequencer-topos/config.toml:/data/node/sequencer-topos/config.toml
     depends_on:
-      topos-node-1:
+      topos-node-4:
         condition: service_healthy
       contracts-topos:
         condition: service_completed_successfully
