@@ -140,7 +140,8 @@ services:
       - ${PRICE_LIMIT}
       - "--seal"
     healthcheck:
-      test: "/bin/sh /polygon_edge_healthcheck.sh ."
+      test: | 
+        /bin/sh /polygon_edge_healthcheck.sh .
       interval: 5s
       retries: 10       
     depends_on:
