@@ -36,10 +36,10 @@ services:
     depends_on:
       contracts-init:
         condition: service_completed_successfully
-      topos-node-1:
-        condition: service_healthy
-      incal-node-1:
-        condition: service_healthy
+      topos-node-4:
+        condition: service_healthy        
+      incal-node-4:
+        condition: service_healthy 
     networks:
       - local-erc20-messaging-infra-docker
 
@@ -59,8 +59,13 @@ services:
     volumes:
       - incal-data:/data/incal
     depends_on:
-      incal-node-1:
-        condition: service_healthy
+      incal-init:
+        condition: service_completed_successfully
+      contracts-init:
+        condition: service_completed_successfully
+      incal-node-4:
+        condition: service_healthy    
+
     networks:
       - local-erc20-messaging-infra-docker
 
