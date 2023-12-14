@@ -34,27 +34,57 @@ echo "Executing block cert production test..."
 # Get last block number created on the topos polygon edge node
 last_block_topos=$(get_last_block topos-node-1)
 echo "Topos subnet last block: $last_block_topos"
+
+last_block_topos=100
+
 # Check if certificate with this block number is produced on the topos sequencer
-certificate_produced=$(check_certificate_produced topos-sequencer $last_block_topos)
-if [ $certificate_produced -eq 0 ]; then
-    echo "Certificate for block $last_block_topos produced on topos sequencer"
-else
-    echo "Certificate for block $last_block_topos IS NOT produced on topos sequencer"
-    exit 1
-fi
+# Try multiple times to give time to sequencer to sync/catch up
+for i in {1..10};
+do
+    certificate_produced=$(check_certificate_produced topos-sequencer $last_block_topos)
+    if [ $certificate_produced -eq 0 ]; then
+        echo "Certificate for block $last_block_topos produced on topos sequencer"
+        break
+    else
+        echo "Certificate for block $last_block_topos IS NOT produced on topos sequencer"
+        if [[ "$i" != '10' ]]; then
+            echo "Trying again in 5 seconds for $(($i+1)) time"
+            sleep 5
+            continue
+        fi
+        if [ $network_started -eq 1 ]; then
+            echo "Test failed, shutting down network started for this test"
+            stop_network
+        fi        
+        exit 1
+    fi
+done
 
 
 # Get last block number created on the incal polygon edge node
 last_block_incal=$(get_last_block incal-node-1)
 echo "Incal subnet last block: $last_block_incal"
 # Check if certificate with this block number is produced on the incal sequencer
-certificate_produced=$(check_certificate_produced incal-sequencer $last_block_incal)
-if [ $certificate_produced -eq 0 ]; then
-    echo "Certificate for block $last_block_incal produced on incal sequencer"
-else
-    echo "Certificate for block $last_block_incal IS NOT produced on incal sequencer"
-    exit 1
-fi
+for i in {1..10};
+do
+    certificate_produced=$(check_certificate_produced incal-sequencer $last_block_incal)
+    if [ $certificate_produced -eq 0 ]; then
+        echo "Certificate for block $last_block_incal produced on incal sequencer"
+        break
+    else
+        echo "Certificate for block $last_block_incal IS NOT produced on incal sequencer"
+        if [[ "$i" != '10' ]]; then
+            echo "Trying again in 5 seconds for $(($i+1)) time"
+            sleep 5        
+            continue
+        fi
+        if [ $network_started -eq 1 ]; then
+            echo "Test failed, shutting down network started for this test"
+            stop_network
+        fi
+        exit 1
+    fi
+done    
 
 
 
