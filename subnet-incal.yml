@@ -38,7 +38,7 @@ services:
       - ${PRICE_LIMIT}
       - "--seal"
     healthcheck:
-      test: ./polygon-edge status | awk '/Number/ {print $$NF}' | tr -d '\n' | grep -v -w "0"
+      test: ./polygon-edge status | grep 'Current Block Number (base 10) = .[0-9]*'
       interval: 5s
       retries: 10
     depends_on:
@@ -71,9 +71,15 @@ services:
       - "--price-limit"
       - ${PRICE_LIMIT}
       - "--seal"
+    healthcheck:
+      test: ./polygon-edge status | grep 'Current Block Number (base 10) = .[0-9]*'
+      interval: 5s
+      retries: 10       
     depends_on:
       incal-init:
         condition: service_completed_successfully
+      incal-node-1:
+        condition: service_healthy           
     volumes:
       - incal-data:/data
     restart: on-failure
@@ -99,9 +105,15 @@ services:
       - "--price-limit"
       - ${PRICE_LIMIT}
       - "--seal"
+    healthcheck:
+      test: ./polygon-edge status | grep 'Current Block Number (base 10) = .[0-9]*'
+      interval: 5s
+      retries: 10       
     depends_on:
       incal-init:
         condition: service_completed_successfully
+      incal-node-1:
+        condition: service_healthy                   
     volumes:
       - incal-data:/data
     restart: on-failure
@@ -127,11 +139,19 @@ services:
       - "--price-limit"
       - ${PRICE_LIMIT}
       - "--seal"
+    healthcheck:
+      test: | 
+        /bin/sh /polygon_edge_healthcheck.sh .
+      interval: 5s
+      retries: 10       
     depends_on:
       incal-init:
         condition: service_completed_successfully
+      incal-node-1:
+        condition: service_healthy                           
     volumes:
       - incal-data:/data
+      - ./scripts/polygon_edge_healthcheck.sh:/polygon_edge_healthcheck.sh:ro
     restart: on-failure
     networks:
       - local-erc20-messaging-infra-docker
@@ -145,12 +165,14 @@ services:
       - incal-data:/data
       - ./node_config/node/sequencer-incal/config.toml:/tmp/node_config/node/sequencer-incal/config.toml
     depends_on:
-      topos-node-1:
+      topos-node-4:
         condition: service_healthy
       contracts-topos:
         condition: service_completed_successfully
       contracts-incal:
         condition: service_completed_successfully
+      incal-node-4:
+        condition: service_healthy
     entrypoint: ""
     command: bash -c "
       source /contracts/.env &&
