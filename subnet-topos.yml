@@ -235,7 +235,6 @@ services:
         condition: service_completed_successfully
     entrypoint: ""
     command: bash -c "
-      apt-get update && apt-get install -y net-tools &&
       source /contracts/.env &&
       mkdir -p /data/node/sequencer-topos/consensus -p /data/node/sequencer-topos/libp2p -p /data/subnet/topos-sequencer/ &&
       cp -vr /data/node/node-1/consensus /data/node/sequencer-topos/ &&

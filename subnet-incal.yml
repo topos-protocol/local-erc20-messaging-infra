@@ -175,7 +175,6 @@ services:
         condition: service_healthy
     entrypoint: ""
     command: bash -c "
-      apt-get update && apt-get install -y net-tools &&
       source /contracts/.env &&
       cp -vr /data/data-1/consensus /tmp/node_config/node/sequencer-incal/consensus &&
       cp -vr /data/data-1/libp2p /tmp/node_config/node/sequencer-incal/libp2p &&
