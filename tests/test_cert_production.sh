@@ -34,7 +34,6 @@ echo "Executing block cert production test..."
 # Get last block number created on the topos polygon edge node
 last_block_topos=$(get_last_block topos-node-1)
 echo "Topos subnet last block: $last_block_topos"
-
 # Check if certificate with this block number is produced on the topos sequencer
 # Try multiple times to give time to sequencer to sync/catch up
 for i in {1..10};
