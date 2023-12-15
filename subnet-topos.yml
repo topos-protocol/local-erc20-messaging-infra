@@ -235,6 +235,7 @@ services:
         condition: service_completed_successfully
     entrypoint: ""
     command: bash -c "
+      apt-get update && apt-get install -y net-tools &&
       source /contracts/.env &&
       mkdir -p /data/node/sequencer-topos/consensus -p /data/node/sequencer-topos/libp2p -p /data/subnet/topos-sequencer/ &&
       cp -vr /data/node/node-1/consensus /data/node/sequencer-topos/ &&
@@ -242,6 +243,10 @@ services:
       cp -vr /data/subnet/topos/genesis.json /data/subnet/topos-sequencer/genesis.json &&
       echo \"Topos Core contract address:\" $(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS), set manually in config &&
       topos node up --name sequencer-topos --home /data/ --no-edge-process"
+    healthcheck:
+      test: ["CMD-SHELL", "test $(netstat -ntu | grep ':8545' | wc -l) -gt 0"]
+      interval: 1s
+      retries: 10
     environment:
       - RUST_LOG=info,topos=debug
       - TOOLCHAIN_VERSION=stable

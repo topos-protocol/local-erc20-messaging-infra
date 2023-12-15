@@ -21,18 +21,13 @@ stop_network () {
 
 check_network_health () {
     # Check if all relevant containers are healthy
-    # TODO: Add healcheck for sequencers, currenly only tce and polygon edge nodes are checked
-    SERVICE_NAMES=$(docker compose config --dry-run --services | grep -e node)
+    SERVICE_NAMES=$(docker compose config --dry-run --services | grep -e node -e sequencer)
     EXPECTED=$(docker compose ps -aq $SERVICE_NAMES | wc -l)
     COUNT=$(docker inspect --format "{{.State.Health.Status }}" $(docker compose ps -aq $SERVICE_NAMES) | grep "^healthy$"|wc -l)
-    echo "Number of Healthy containers: $COUNT"
     if [[ $COUNT -eq $EXPECTED ]]; then
-        echo "All expected containers healthy"
-        return 0
+        echo 0
     else
-        echo "Unhealthy containers"
-        docker compose -f tools/docker-compose.yml ps -a peer boot
-        return 1
+        echo 1
     fi
 }
 
