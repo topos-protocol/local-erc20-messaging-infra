@@ -43,6 +43,8 @@ is_network_running() {
 
 
 function graphql_get_tce_certificate () {
+    # $1 - certificate id
+    # $2 - tce graphql endpoint
     local query='{"query": "{certificate(certificateId: {value: \"'$1'\"})  \n { \n id \n stateRoot \n}}"}'
     TCE_CERT=$(curl -X POST -H "Content-Type: application/json" -d "$query" $2 | jq -r '.data.certificate.id')
     echo $TCE_CERT
