@@ -12,6 +12,7 @@ function get_last_sequncer_generated_certificate () {
 
 function check_certificate_delivered () {
     # $1 - node name
+    # $2 - certificate id
     docker compose logs $1 | grep -e "Certificate delivered $2" > /dev/null
     local certificate_delivered=$?
     echo $certificate_delivered
