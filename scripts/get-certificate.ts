@@ -1,4 +1,4 @@
-import { Contract, Wallet, isHexString, JsonRpcProvider } from 'ethers'
+import { Contract, Wallet, providers, utils } from 'ethers'
 
 import toposCoreJson from '../artifacts/ToposCore.json'
 
@@ -6,11 +6,11 @@ import toposCoreJson from '../artifacts/ToposCore.json'
 /// ts-node ./scripts/get-certificate.ts <node endpoint> <receipts root hash>
 const main = async function (...args: string[]) {
     const [providerEndpoint, receiptsRoot] = args
-    const provider = new JsonRpcProvider(providerEndpoint)
+    const provider = providers.getDefaultProvider(providerEndpoint)
     const toposDeployerPrivateKey = sanitizeHexString(
         process.env.PRIVATE_KEY || ''
     )
-    if (!isHexString(toposDeployerPrivateKey, 32)) {
+    if (!utils.isHexString(toposDeployerPrivateKey, 32)) {
         console.error(
             'ERROR: Please provide a valid toposDeployer private key! (PRIVATE_KEY)'
         )
@@ -19,7 +19,7 @@ const main = async function (...args: string[]) {
     const toposCoreProxyAddress = sanitizeHexString(
         process.env.TOPOS_CORE_PROXY_CONTRACT_ADDRESS || ''
     )
-    if (!isHexString(toposCoreProxyAddress, 20)) {
+    if (!utils.isHexString(toposCoreProxyAddress, 20)) {
         console.error(
             'ERROR: Please set topos core proxy contract address  TOPOS_CORE_PROXY_CONTRACT_ADDRESS'
         )

@@ -1,4 +1,4 @@
-import { AbiCoder, Contract, Wallet, isHexString, JsonRpcProvider, parseUnits } from 'ethers'
+import { Contract, providers, utils, Wallet } from 'ethers'
 
 import erc20MessagingJSON from '../artifacts/ERC20Messaging.json'
 import ERC20 from '../artifacts/BurnableMintableCappedERC20.json'
@@ -12,21 +12,14 @@ const INITIAL_SUPPLY = 10_000_000
 /// Usage:
 /// ts-node ./scripts/send-token.ts <node endpoint> <sender private key> <receiver account> <amount>
 const main = async function (...args: string[]) {
-    const [providerEndpoint, senderPrivateKey, receiverAddress, amount] = args
-    const provider = new JsonRpcProvider(providerEndpoint)
+    const [providerEndpoint, senderPrivateKey, targetSubnetId, receiverAddress, amount] = args
+    const provider = providers.getDefaultProvider(providerEndpoint)
     const erc20MessagingAddress = sanitizeHexString(
         process.env.ERC20_MESSAGING_CONTRACT_ADDRESS || ''
     )
-    if (!isHexString(erc20MessagingAddress, 20)) {
+    if (!utils.isHexString(erc20MessagingAddress, 20)) {
         console.error(
             'ERROR: Please set token deployer contract address ERC20_MESSAGING_CONTRACT_ADDRESS'
-        )
-        process.exit(1)
-    }
-    const targetSubnetId = sanitizeHexString(process.env.TARGET_SUBNET || '')
-    if (!targetSubnetId) {
-        console.error(
-            'ERROR: Please set target subnet id TARGET_SUBNET'
         )
         process.exit(1)
     }
@@ -51,13 +44,13 @@ const main = async function (...args: string[]) {
         }
     }
     if (deploy) {
-        const defaultToken = AbiCoder.defaultAbiCoder().encode(
+        const defaultToken = utils.defaultAbiCoder.encode(
             ['string', 'string', 'uint256', 'uint256', 'uint256'],
             [TOKEN_NAME, TOKEN_SYMBOL, MINT_CAP, DAILY_MINT_LIMIT, INITIAL_SUPPLY]
         )
         // Deploy token if not previously deployed
         await erc20Messaging.deployToken(defaultToken, {
-            gasLimit: 5_000_000,
+            gasLimit: 5_000_000
         })
         // get token address
         const token = await erc20Messaging.getTokenBySymbol(TOKEN_SYMBOL)
@@ -66,7 +59,7 @@ const main = async function (...args: string[]) {
 
     // Approve token burn
     const erc20 = new Contract(tokenAddress, ERC20.abi, wallet)
-    await erc20.approve(await erc20Messaging.getAddress(), amount)
+    await erc20.approve(erc20Messaging.address, amount)
 
     // Send token
     const sendTokenTx = await erc20Messaging.sendToken(
@@ -75,14 +68,14 @@ const main = async function (...args: string[]) {
         receiverAddress,
         amount,
         {
-            gasLimit: 10_000_000,
-            gasPrice: parseUnits('100', 'gwei')
+            gasLimit: 5_100_000
         }
     );
     const receipt = await sendTokenTx.wait()
 
     // Print out block's receipt's root
-    const rawBlock = await provider.send('eth_getBlockByHash', [
+    const jsonRpcProvider = provider as providers.JsonRpcProvider
+    const rawBlock = await jsonRpcProvider.send('eth_getBlockByHash', [
         receipt.blockHash,
         true,
     ])
@@ -94,4 +87,9 @@ const sanitizeHexString = function (hexString: string) {
 }
 
 const args = process.argv.slice(2)
-main(...args)
+try {
+    main(...args)
+} catch (error) {
+    console.error(error)
+    process.exit(1)
+}
