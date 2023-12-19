@@ -72,7 +72,6 @@ function send_token_with_retry()
     amount="1"
     for i in $(seq 1 $1);
     do
-        # npx ts-node $LOCAL_ERC20_HOME/scripts/send-token http://localhost:$3 $PRIVATE_KEY $2 $arbitrary_receiver_address $amount
         result=$(npx ts-node $LOCAL_ERC20_HOME/scripts/send-token http://localhost:$3 $PRIVATE_KEY $2 $arbitrary_receiver_address $amount $4)
         if [ -z "$result" ]; then
             echo "Transaction failed, trying again in 5 seconds for $(($i+1)) time"
