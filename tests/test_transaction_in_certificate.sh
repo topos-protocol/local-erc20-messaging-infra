@@ -10,7 +10,6 @@ function get_transaction_in_certificate()
      awk -F 'transaction_hash: ' '{print $2}' | awk -F ',' '{print $1'} | tail -1)
 }
 
-export ERC20_MESSAGING_CONTRACT_ADDRESS=$(get_erc20_contract_address)
 
 network_started=0
 
@@ -23,12 +22,13 @@ if [ $is_running -eq 1 ]; then
     network_started=1
     sleep 5 # Warm up network
 fi
+export ERC20_MESSAGING_CONTRACT_ADDRESS=$(get_erc20_contract_address)
 
 
 # Make token transaction
 echo "Executing test of transaction inclusion in certificate..."
+check_artifacts
 topos_subnet_id=$(get_topos_subnet_id)
-echo "Topos subnet id is $topos_subnet_id"
 tx_hash=$(send_token_with_retry 3 $topos_subnet_id $INCAL_HOST_PORT "txhash")
 transaction_valid=$?
 echo "Transaction send token result: $transaction_valid, tx hash: $tx_hash"
