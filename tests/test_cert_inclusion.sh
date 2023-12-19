@@ -43,9 +43,12 @@ echo "Receipts root hash: $receipts_root"
 is_certificate_present=$(check_certificate_inclusion_with_retry 3 $receipts_root)
 if [ $is_certificate_present -eq 0 ]; then
     echo "Certificate is present"
-    exit 0
 else
     echo "Certificate is NOT present"
+    if [ $network_started -eq 1 ]; then
+        echo "Shutting down network started for this test"
+        stop_network
+    fi
     exit 1
 fi
 
