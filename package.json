@@ -1,0 +1,10 @@
+{
+  "name": "local-erc20-messaging-infra",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "devDependencies": {
+    "ethers": "^5.7.2",
+    "ts-node": "^10.9.1"
+  }
+}
