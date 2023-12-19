@@ -49,3 +49,60 @@ function graphql_get_tce_certificate () {
     TCE_CERT=$(curl -X POST -H "Content-Type: application/json" -d "$query" $2 | jq -r '.data.certificate.id')
     echo $TCE_CERT
 }
+
+
+function get_incal_subnet_id()
+{
+    echo $(docker compose logs incal-sequencer | grep "for subnet id 0x" | awk -F 'for subnet id ' '{print $2}')
+}
+
+function get_topos_subnet_id()
+{
+    echo $(docker compose logs topos-sequencer | grep "for subnet id 0x" | awk -F 'for subnet id ' '{print $2}')
+}
+
+
+function send_token_with_retry()
+{
+    # $1 - number of retries
+    # $2 - target subnet id
+    # $3 - host port of the edge node to send transaction from
+    # $4 - return value type
+    arbitrary_receiver_address="0xF472626faeb65277342e07962a8333A735934554"
+    amount="1"
+    for i in $(seq 1 $1);
+    do
+        # npx ts-node $LOCAL_ERC20_HOME/scripts/send-token http://localhost:$3 $PRIVATE_KEY $2 $arbitrary_receiver_address $amount
+        result=$(npx ts-node $LOCAL_ERC20_HOME/scripts/send-token http://localhost:$3 $PRIVATE_KEY $2 $arbitrary_receiver_address $amount $4)
+        if [ -z "$result" ]; then
+            echo "Transaction failed, trying again in 5 seconds for $(($i+1)) time"
+            if [ $i -eq $1 ]; then
+                return 1
+            fi        
+            sleep 5
+            continue
+        fi
+        echo "$result"
+        break
+    done
+}
+
+function check_artifacts()
+{
+    if [ ! -d $LOCAL_ERC20_HOME/artifacts ] || [ -z "$(ls -A $LOCAL_ERC20_HOME/artifacts)" ]; then
+        $LOCAL_ERC20_HOME/scripts/copy_contract_artifacts.sh
+    fi
+}
+
+function get_erc20_contract_address()
+{
+    echo $(docker compose logs contracts-topos | grep "ERC20_MESSAGING_CONTRACT_ADDRESS" | \
+     awk -F 'ERC20_MESSAGING_CONTRACT_ADDRESS=' '{print $2}')
+}
+
+function get_topos_core_proxy_contract_address()
+{
+    echo $(docker compose logs contracts-topos | grep "TOPOS_CORE_PROXY_CONTRACT_ADDRESS" | \
+     awk -F 'TOPOS_CORE_PROXY_CONTRACT_ADDRESS=' '{print $2}')
+}
+
