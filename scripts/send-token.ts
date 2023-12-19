@@ -10,9 +10,10 @@ const DAILY_MINT_LIMIT = 100
 const INITIAL_SUPPLY = 10_000_000
 
 /// Usage:
-/// ts-node ./scripts/send-token.ts <node endpoint> <sender private key> <receiver account> <amount>
+/// ts-node ./scripts/send-token.ts <node endpoint> <sender private key> <receiver account> <amount> <return_value>
+/// If parameter return value is 'txhash', the script will return the transaction hash; by default it returns the block's receipt's root
 const main = async function (...args: string[]) {
-    const [providerEndpoint, senderPrivateKey, targetSubnetId, receiverAddress, amount] = args
+    const [providerEndpoint, senderPrivateKey, targetSubnetId, receiverAddress, amount, return_value] = args
     const provider = providers.getDefaultProvider(providerEndpoint)
     const erc20MessagingAddress = sanitizeHexString(
         process.env.ERC20_MESSAGING_CONTRACT_ADDRESS || ''
@@ -79,7 +80,12 @@ const main = async function (...args: string[]) {
         receipt.blockHash,
         true,
     ])
-    console.log(rawBlock.receiptsRoot)
+    if (return_value == 'txhash') {
+        console.log(sendTokenTx.hash)
+        return
+    } else {
+        console.log(rawBlock.receiptsRoot)
+    }
 }
 
 const sanitizeHexString = function (hexString: string) {
