@@ -50,9 +50,10 @@ const main = async function (...args: string[]) {
             [TOKEN_NAME, TOKEN_SYMBOL, MINT_CAP, DAILY_MINT_LIMIT, INITIAL_SUPPLY]
         )
         // Deploy token if not previously deployed
-        await erc20Messaging.deployToken(defaultToken, {
+        const deployTokenTx = await erc20Messaging.deployToken(defaultToken, {
             gasLimit: 5_000_000
         })
+        await deployTokenTx.wait()
         // get token address
         const token = await erc20Messaging.getTokenBySymbol(TOKEN_SYMBOL)
         tokenAddress = token.addr

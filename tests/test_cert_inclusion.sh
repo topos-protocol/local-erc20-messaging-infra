@@ -3,8 +3,6 @@ set -e
 
 source $LOCAL_ERC20_HOME/tests/utils.sh
 
-export ERC20_MESSAGING_CONTRACT_ADDRESS=$(get_erc20_contract_address)
-export TOPOS_CORE_PROXY_CONTRACT_ADDRESS=$(get_topos_core_proxy_contract_address)
 
 function check_certificate_inclusion_with_retry()
 {
@@ -13,14 +11,15 @@ function check_certificate_inclusion_with_retry()
     for i in $(seq 1 $1);
     do
         certificate=$(npx ts-node $LOCAL_ERC20_HOME/scripts/get-certificate http://localhost:$INCAL_HOST_PORT $2)
-        if [ -z "$certificate" ]; then
+        if [ -n "$certificate" ]; then
+            echo 0
+            return
+        else
             "$(($i+1))"
             sleep 5
-            continue
         fi
-        echo 0
-        break
     done
+    echo 1
 }
 
 network_started=0
@@ -33,10 +32,13 @@ if [ $is_running -eq 1 ]; then
     network_started=1
     sleep 5 # Warm up network
 fi
+export ERC20_MESSAGING_CONTRACT_ADDRESS=$(get_erc20_contract_address)
+export TOPOS_CORE_PROXY_CONTRACT_ADDRESS=$(get_topos_core_proxy_contract_address)
 
 
 # Perform test
 echo "Executing certificate inclusion test..."
+check_artifacts
 incal_subnet_id=$(get_incal_subnet_id)
 receipts_root=$(send_token_with_retry 3 $incal_subnet_id $TOPOS_HOST_PORT)
 echo "Receipts root hash: $receipts_root"
