@@ -41,9 +41,9 @@ echo "Executing certificate inclusion test..."
 check_artifacts
 incal_subnet_id=$(get_incal_subnet_id)
 receipts_root=$(send_token_with_retry 3 $incal_subnet_id $TOPOS_HOST_PORT)
-transaction_valid=$?
+receipts_root_valid=$?
 echo "Receipts root hash: $receipts_root"
-if [ $transaction_valid -eq 1 ]; then
+if [ $receipts_root_valid -eq 1 ]; then
     echo "Transaction send token failed"
     if [ $network_started -eq 1 ]; then
         echo "Shutting down network started for this test"
