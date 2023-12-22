@@ -33,7 +33,7 @@ tx_hash=$(send_token_with_retry 3 $topos_subnet_id $INCAL_HOST_PORT "txhash")
 transaction_valid=$?
 echo "Transaction send token result: $transaction_valid, tx hash: $tx_hash"
 if [ $transaction_valid -eq 1 ]; then
-    echo "Transaction send token failed, shutting down network started for this test"
+    echo "Transaction send token failed"
     if [ $network_started -eq 1 ]; then
         echo "Shutting down network started for this test"
         stop_network
