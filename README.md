@@ -51,6 +51,10 @@ docker compose --profile executor-service up -d
 - You need to add the `--profile` flag to all commands, e.g. `docker compose --profile ... down`
 - **Important**: The Executor Service must run on the `host` network. As detailed in docker's [documentation](https://docs.docker.com/network/host/), the `host` networking driver only works on Linux. This means Mac/Windows users cannot use this flag and must run the Executor Service natively on the host.
 
+## Local integration tests
+
+The integration tests are located in the `./tests` directory (see [README.md](./tests/README.md)).
+
 ## Env
 
 A few environment variables are editable from the `.env` file found on the root of this repository.
