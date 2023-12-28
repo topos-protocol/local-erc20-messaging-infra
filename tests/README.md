@@ -1,6 +1,6 @@
 ## Description
 
-These tests are designed to be executed locally against a running instance of the Local ERC20 messaging infrastructure. The tests are written as bash scripts, with each test being a separate file that can be run individually. Each test checks if the infrastructure is running, and if not, starts it. The tests then run and report the results. After the tests have completed, the infrastructure is stopped in the same script, so no need to stop it manually.
+These tests are designed to be executed locally against a running instance of the Local ERC20 messaging infrastructure (Docker Compose setup). The tests are written as bash scripts, with each test being a separate file that can be run individually. Each test checks if the infrastructure is running and, if not, starts it. The tests then run and report the results. After the tests have been completed, if the infrastructure is started by a particular script, it is stopped in the same way, so there is no need to stop it manually. If local ERC20 messaging infrastructure is started prior to the test script's execution, tests do not start or stop the Docker Compose network.
 
 ## Prerequisites
 
@@ -36,4 +36,4 @@ $ ./tests/<NAME_OF_TEST>.sh
     - `get-certificate.ts`: Retrieves the certificate from the `ToposCore.sol` contract of a subnet.
     - `send-token.ts`: Performs a token transfer transaction using the Topos Messaging Protocol, from one subnet to another, using the `ERC20Messaging.sol` contract.
 
-- The smart contract artifacts are copied from `topos-sequencer` container to the `./artifacts` directory. These artifacts are then used by the TypeScript scripts to interact with the infrastructure. No need to copy them manually as the tests will take care of that automatically using a helper script, `./scripts/copy_contract_artifacts.sh`.
+- The smart contract artifacts are copied from the `topos-sequencer` container to the `./artifacts` directory. These artifacts are then used by the TypeScript scripts to interact with the infrastructure. There is no need to copy them manually, as the tests will take care of that automatically using a helper script, `./scripts/copy_contract_artifacts.sh`.
