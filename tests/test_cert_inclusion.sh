@@ -35,7 +35,7 @@ fi
 export ERC20_MESSAGING_CONTRACT_ADDRESS=$(get_erc20_contract_address)
 export TOPOS_CORE_PROXY_CONTRACT_ADDRESS=$(get_topos_core_proxy_contract_address)
 
-
+wait_network_healthy
 # Perform test
 echo "Executing certificate inclusion test..."
 check_artifacts

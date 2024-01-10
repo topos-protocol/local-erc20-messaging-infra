@@ -31,6 +31,22 @@ check_network_health () {
     fi
 }
 
+function wait_network_healthy () {
+    while true;
+    do
+        echo "Waiting for network to be healthy..."
+        healthy=$(check_network_health)
+        if [ $healthy -eq 0 ]; then
+            echo "Network is healthy"
+            break
+        else
+            echo "Network is not healthy yet, trying again in 5 seconds"
+            sleep 5
+            continue
+        fi
+    done
+}
+
 is_network_running() {
     SERVICE_NAMES=$(docker compose config --dry-run --services | grep -e node -e sequencer)
     COUNT=$(docker compose ps -aq $SERVICE_NAMES | wc -l) 
