@@ -24,7 +24,7 @@ if [ $is_running -eq 1 ]; then
 fi
 export ERC20_MESSAGING_CONTRACT_ADDRESS=$(get_erc20_contract_address)
 
-
+wait_network_healthy
 # Make token transaction
 echo "Executing test of transaction inclusion in certificate..."
 check_artifacts

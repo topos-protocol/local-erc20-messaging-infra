@@ -28,7 +28,7 @@ if [ $is_running -eq 1 ]; then
     sleep 5 # Warm up network
 fi
 
-
+wait_network_healthy
 # Perform test
 echo "Executing block cert production test..."
 # Get last block number created on the topos polygon edge node
