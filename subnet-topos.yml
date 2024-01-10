@@ -86,7 +86,7 @@ services:
         condition: service_completed_successfully
     volumes:
       - topos-data:/data
-      - ./node_config/node/boot/config.toml:/data/node/node-1/config.toml:ro
+      - ./node_config/node/topos-node-1/config.toml:/data/node/node-1/config.toml:ro
     restart: on-failure
     ports:
       - "${TOPOS_HOST_PORT}:8545"
@@ -127,7 +127,7 @@ services:
         condition: service_healthy
     volumes:
       - topos-data:/data
-      - ./node_config/node/boot/config.toml:/data/node/node-2/config.toml:ro
+      - ./node_config/node/topos-node-2/config.toml:/data/node/node-2/config.toml:ro
     restart: on-failure
     ports:
       - "9090"
@@ -167,7 +167,7 @@ services:
         condition: service_healthy
     volumes:
       - topos-data:/data
-      - ./node_config/node/boot/config.toml:/data/node/node-3/config.toml:ro
+      - ./node_config/node/topos-node-3/config.toml:/data/node/node-3/config.toml:ro
     restart: on-failure
     ports:
       - "9090"
@@ -207,7 +207,7 @@ services:
         condition: service_healthy
     volumes:
       - topos-data:/data
-      - ./node_config/node/boot/config.toml:/data/node/node-4/config.toml:ro
+      - ./node_config/node/topos-node-4/config.toml:/data/node/node-4/config.toml:ro
       - ./scripts/polygon_edge_healthcheck.sh:/polygon_edge_healthcheck.sh:ro
     restart: on-failure
     ports:
