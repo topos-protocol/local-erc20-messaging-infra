@@ -1,5 +1,5 @@
 [base]
-name = "boot"
+name = "topos-node-4"
 role = "validator"
 subnet = "topos"
 
@@ -13,6 +13,9 @@ price-limit="0"
 db-path = "tce_rocksdb"
 graphql-api-addr = "0.0.0.0:4030"
 grpc-api-addr = "0.0.0.0:1340"
-libp2p-api-addr = "0.0.0.0:9090"
 metrics-api-addr = "0.0.0.0:3030"
 minimum-tce-cluster-size = 3
+
+[tce.p2p]
+listen_addresses = ["/ip4/0.0.0.0/tcp/9090"]
+public_addresses = ["/dns4/topos-node-4/tcp/9090"]
