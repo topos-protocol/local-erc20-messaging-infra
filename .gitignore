@@ -1,3 +1,9 @@
 # NodeJS
 node_modules/
 artifacts/
+
+# Visual Studio code
+.vscode/
+
+# Makefile
+Makefile
