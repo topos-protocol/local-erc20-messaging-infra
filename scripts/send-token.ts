@@ -1,4 +1,4 @@
-import { Contract, providers, utils, Wallet } from 'ethers'
+import { Contract, getDefaultProvider, JsonRpcProvider, isHexString, Wallet, AbiCoder } from 'ethers'
 
 import erc20MessagingJSON from '../artifacts/ERC20Messaging.json'
 import ERC20 from '../artifacts/BurnableMintableCappedERC20.json'
@@ -14,11 +14,11 @@ const INITIAL_SUPPLY = 10_000_000
 /// If parameter return value is 'txhash', the script will return the transaction hash; by default it returns the block's receipt's root
 const main = async function (...args: string[]) {
     const [providerEndpoint, senderPrivateKey, targetSubnetId, receiverAddress, amount, return_value] = args
-    const provider = providers.getDefaultProvider(providerEndpoint)
+    const provider = getDefaultProvider(providerEndpoint)
     const erc20MessagingAddress = sanitizeHexString(
         process.env.ERC20_MESSAGING_CONTRACT_ADDRESS || ''
     )
-    if (!utils.isHexString(erc20MessagingAddress, 20)) {
+    if (!isHexString(erc20MessagingAddress, 20)) {
         console.error(
             'ERROR: Please set token deployer contract address ERC20_MESSAGING_CONTRACT_ADDRESS'
         )
@@ -45,7 +45,7 @@ const main = async function (...args: string[]) {
         }
     }
     if (deploy) {
-        const defaultToken = utils.defaultAbiCoder.encode(
+        const defaultToken = AbiCoder.defaultAbiCoder().encode(
             ['string', 'string', 'uint256', 'uint256', 'uint256'],
             [TOKEN_NAME, TOKEN_SYMBOL, MINT_CAP, DAILY_MINT_LIMIT, INITIAL_SUPPLY]
         )
@@ -61,7 +61,13 @@ const main = async function (...args: string[]) {
 
     // Approve token burn
     const erc20 = new Contract(tokenAddress, ERC20.abi, wallet)
-    await erc20.approve(erc20Messaging.address, amount)
+    const approveTx = await erc20.approve(erc20MessagingAddress, amount)
+    await approveTx.wait()
+
+    // Print out the inputs to the sendToken function
+    console.log(
+        `Sending ${amount} ${TOKEN_SYMBOL} ${tokenAddress} to ${receiverAddress} on subnet ${targetSubnetId} using contract ${erc20MessagingAddress}...`
+    )
 
     // Send token
     const sendTokenTx = await erc20Messaging.sendToken(
@@ -76,7 +82,7 @@ const main = async function (...args: string[]) {
     const receipt = await sendTokenTx.wait()
 
     // Print out block's receipt's root
-    const jsonRpcProvider = provider as providers.JsonRpcProvider
+    const jsonRpcProvider = provider as JsonRpcProvider
     const rawBlock = await jsonRpcProvider.send('eth_getBlockByHash', [
         receipt.blockHash,
         true,
