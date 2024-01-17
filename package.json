@@ -4,7 +4,9 @@
   "description": "",
   "author": "",
   "devDependencies": {
-    "ethers": "^5.7.2",
-    "ts-node": "^10.9.1"
+    "ethers": "^6.9.0",
+    "ts-node": "^10.9.1",
+    "@ethereumjs/rlp": "^4.0.1",
+    "@ethereumjs/trie": "^5.0.4"
   }
 }
