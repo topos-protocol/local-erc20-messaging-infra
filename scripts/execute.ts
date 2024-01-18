@@ -1,8 +1,9 @@
-import { Contract, getDefaultProvider, AbstractProvider, isHexString, Wallet, Block, hexlify, TransactionResponse, toUtf8String } from 'ethers'
+import { Contract, getDefaultProvider, AbstractProvider, isHexString, Wallet, Block, hexlify, TransactionResponse, Interface } from 'ethers'
 import { RLP } from '@ethereumjs/rlp'
 import { Trie } from '@ethereumjs/trie'
 
 import erc20MessagingJSON from '../artifacts/ERC20Messaging.json'
+import burnableMintableCappedERC20JSON from '../artifacts/BurnableMintableCappedERC20.json'
 
 const main = async function (...args: string[]) {
     const [sourceProviderEndpoint, targetProviderEndpoint, senderPrivateKey, txHash, indexes] = args
@@ -28,16 +29,16 @@ const main = async function (...args: string[]) {
         txHash,
         sourceProvider
     )
-    console.log(`Proof blob: ${proofBlob}`)
-    console.log(`Receipts root: ${receiptsRoot}`)
-    
+    // console.log(`Proof blob: ${proofBlob}`)
+    // console.log(`Receipts root: ${receiptsRoot}`)
+
     console.log(
         `Executing transaction ${txHash} with indexes ${indexes}...`
     )
     const numArray: number[] = [Number(indexes)];
 
     const executeTx = await erc20Messaging.execute(numArray, proofBlob, receiptsRoot as string, {
-            gasLimit: 5_000_000
+        gasLimit: 5_000_000
     });
     try {
         const receipt = await executeTx.wait();
@@ -53,8 +54,14 @@ const main = async function (...args: string[]) {
             await targetProvider.call(tx);
         } catch (error: any) {
             if (error.data) {
-                const decodedError = erc20Messaging.interface.parseError(error.data);
-                console.error(`Transaction failed with custom error: ${decodedError!.name}`);
+                const decodedERC20MessagingError = new Interface(erc20MessagingJSON.abi).parseError(error.data);
+                if (decodedERC20MessagingError !== null) {
+                    console.error(`Transaction failed with custom error: ${decodedERC20MessagingError!.name}`);
+                }
+                const decodedERCTokenError = new Interface(burnableMintableCappedERC20JSON.abi).parseError(error.data);
+                if (decodedERCTokenError !== null) {
+                    console.error(`Transaction failed with custom error: ${decodedERCTokenError!.name}`);
+                }
             } else {
                 console.error(error);
             }
