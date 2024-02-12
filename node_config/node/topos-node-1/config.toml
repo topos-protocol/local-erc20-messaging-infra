@@ -14,7 +14,7 @@ db-path = "tce_rocksdb"
 graphql-api-addr = "0.0.0.0:4030"
 grpc-api-addr = "0.0.0.0:1340"
 metrics-api-addr = "0.0.0.0:3030"
-minimum-tce-cluster-size = 3
+minimum-tce-cluster-size = 0
 
 [tce.p2p]
 listen_addresses = ["/ip4/0.0.0.0/tcp/9090"]
