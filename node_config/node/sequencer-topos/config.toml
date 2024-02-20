@@ -5,6 +5,6 @@ role = "sequencer"
 subnet = "topos-sequencer"
 
 [sequencer]
-subnet-contract-address = "0xA72935F69ff442a8FEC503e4bd6c4084372154C3"
+subnet-contract-address = "0x5904ef7B466E6d5190e6CcdAa9C7072Ca4C763b8"
 subnet-jsonrpc-http = "http://topos-node-1:8545"
 tce-grpc-endpoint = "http://topos-node-1:1340"
