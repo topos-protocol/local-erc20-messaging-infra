@@ -28,9 +28,13 @@ https://docs.docker.com/get-docker/
 docker compose down -v
 ```
 
+*Note*: The `-v` flag is important here to ensure that we clean up storage in between runs.
+
 ## Run
 
 If you have a partial or complete existing run, it's recommended to shut down the whole stack (see [Stop](#stop)) before re-running it.
+
+For convenience we have included a `.env.secrets` file with example keys and other info. When starting the stack locally, make sure you `source ./.env.secrets`.
 
 To run the whole stack:
 

@@ -36,12 +36,13 @@ services:
 
   topos-init:
     container_name: topos-init
-    command: sh -c "mkdir -p /data/node/ -p /data/subnet/topos && \
-      mv /data/data-1 /data/node/node-1 && \
-      mv /data/data-2 /data/node/node-2 && \
-      mv /data/data-3 /data/node/node-3 && \
-      mv /data/data-4 /data/node/node-4 && \
-      mv /data/genesis.json /data/subnet/topos/genesis.json && \
+    command: sh -c "
+      mkdir -p /data/node/ -p /data/subnet/topos && \
+      mv -f /data/data-1 /data/node/node-1 && \
+      mv -f /data/data-2 /data/node/node-2 && \
+      mv -f /data/data-3 /data/node/node-3 && \
+      mv -f /data/data-4 /data/node/node-4 && \
+      mv -f /data/genesis.json /data/subnet/topos/genesis.json && \
       chmod a+rwx /data/* && ls -lRa /data && cat /data/subnet/topos/genesis.json"
     image: debian:bullseye-slim
     depends_on:
@@ -74,7 +75,7 @@ services:
       - "--home"
       - "/data"
     healthcheck:
-      test: | 
+      test: |
         set -e
         ./topos node status --node http://localhost:1340
         /data/polygon-edge status | grep 'Current Block Number (base 10) = .[0-9]*'
@@ -153,9 +154,9 @@ services:
       - "--home"
       - "/data"
     healthcheck:
-      test: | 
-        set -e 
-        ./topos node status --node http://localhost:1340 
+      test: |
+        set -e
+        ./topos node status --node http://localhost:1340
         /data/polygon-edge status | grep 'Current Block Number (base 10) = .[0-9]*'
       interval: 10s
       start_period: 1s
@@ -193,7 +194,7 @@ services:
       - "--home"
       - "/data"
     healthcheck:
-      test: | 
+      test: |
         set -e
         ./topos node status --node http://localhost:1340
         /bin/sh /polygon_edge_healthcheck.sh /data
