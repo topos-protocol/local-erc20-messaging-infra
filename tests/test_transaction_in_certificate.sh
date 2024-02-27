@@ -7,7 +7,7 @@ source $LOCAL_ERC20_HOME/tests/utils.sh
 function get_transaction_in_certificate()
 {
     echo $(docker compose logs incal-sequencer | grep "CrossSubnetMessageSentFilter" | \
-     awk -F 'transaction_hash: ' '{print $2}' | awk -F ',' '{print $1'} | tail -1)
+     awk -F 'transaction_hash: ' '{print $2}' | awk -F ',' '{print $1}' | tail -1)
 }
 
 
