@@ -161,6 +161,7 @@ services:
     container_name: incal-sequencer
     init: true
     volumes:
+      - ./scripts/sequencer-init.sh:/tmp/init.sh
       - contracts:/contracts
       - incal-data:/data
       - ./node_config/node/sequencer-incal/config.toml:/tmp/node_config/node/sequencer-incal/config.toml
@@ -173,21 +174,18 @@ services:
         condition: service_completed_successfully
       incal-node-4:
         condition: service_healthy
-    entrypoint: ""
-    command: bash -c "
-      apt-get update && apt-get install -y net-tools &&
-      source /contracts/.env &&
-      cp -vr /data/data-1/consensus /tmp/node_config/node/sequencer-incal/consensus &&
-      cp -vr /data/data-1/libp2p /tmp/node_config/node/sequencer-incal/libp2p &&
-      mkdir -p /tmp/node_config/subnet/incal/ &&
-      cp -v /data/genesis.json /tmp/node_config/subnet/incal/genesis.json  &&
-      echo Topos core contract address=$(printenv TOPOS_CORE_PROXY_CONTRACT_ADDRESS), set manually in config &&
-      topos node up --name sequencer-incal --home /tmp/node_config --no-edge-process"
+    entrypoint: "bash -c"
+    command: /tmp/init.sh
     healthcheck:
       test: ["CMD-SHELL", "test $(netstat -ntu | grep ':8545' | wc -l) -gt 0"]
       interval: 1s
       retries: 10
     environment:
+      - SUBNET=incal
+      - DATA_FOLDER=/data/data-1
+      - CONFIG_FOLDER=/tmp/node_config
+      - GENESIS_FOLDER=/data
+      - SUBNET_FOLDER=/tmp/node_config/subnet/incal
       - RUST_LOG=info,topos=debug
       - TOOLCHAIN_VERSION=stable
       - RUST_BACKTRACE=full

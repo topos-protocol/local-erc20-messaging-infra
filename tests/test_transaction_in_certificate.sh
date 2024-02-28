@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+if [[ -z "${LOCAL_ERC20_HOME}" ]]; then
+    echo "You need to setup the environment first. For local tests: source ./tests/environment.sh"
+    exit 1
+fi
+
 source $LOCAL_ERC20_HOME/tests/utils.sh
 
 
@@ -29,6 +34,11 @@ wait_network_healthy
 echo "Executing test of transaction inclusion in certificate..."
 check_artifacts
 topos_subnet_id=$(get_topos_subnet_id)
+
+echo "Checking connectivity with incal node 1"
+echo "Dialing incal node 1 on localhost:$INCAL_HOST_PORT"
+nc -z localhost $INCAL_HOST_PORT
+
 tx_hash=$(send_token_with_retry 3 $topos_subnet_id $INCAL_HOST_PORT "txhash")
 transaction_valid=$?
 echo "Transaction send token result: $transaction_valid, tx hash: $tx_hash"

@@ -17,4 +17,4 @@ jobs:
           workflow_file_name: frontend:erc20-messaging.yml
           ref: chore/debug-ci-1
           wait_interval: 60
-          client_payload: '{ "local-erc20-messaging-infra-ref": "${{ github.head_ref }}" }'
+          client_payload: '{ "local-erc20-messaging-infra-ref": "${{ github.head_ref }}", "topos-smart-contracts-docker-tag": "3.2.0" }'
