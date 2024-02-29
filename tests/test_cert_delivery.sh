@@ -1,8 +1,12 @@
 #!/bin/bash
 set -e
 
-source $LOCAL_ERC20_HOME/tests/utils.sh
+if [[ -z "${LOCAL_ERC20_HOME}" ]]; then
+    echo "You need to setup the environment first. For local tests: source ./tests/environment.sh"
+    exit 1
+fi
 
+source $LOCAL_ERC20_HOME/tests/utils.sh
 
 function get_last_sequncer_generated_certificate () {
     # $1 - node name

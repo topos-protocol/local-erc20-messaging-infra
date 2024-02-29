@@ -19,7 +19,7 @@ $ npm install
 Then, edit the `.env` file to your liking. The default values should work for most cases. Then, source the `.env` file:
 
 ```sh
-$ source .env
+$ source ./tests/environment.sh
 ```
 
 To run the tests, execute the tests from the root of the repository:
@@ -29,6 +29,11 @@ $ ./tests/<NAME_OF_TEST>.sh
 # e.g. ./tests/test_network_health.sh
 ```
 
+After your tests if you want to unset the environment variables:
+
+```sh
+source ./tests/environment.sh unset
+```
 ### Notes
 
 - The tests use TypeScript scripts to interact with the infrastructure. These scripts can be found in the `./scripts` directory. Currently, there are two main scripts available:
