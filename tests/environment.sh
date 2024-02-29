@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# This script is used to set up the environment variables for the local test environment
+# It reads the .env and .env.secrets files and sets the environment variables accordingly
+# If the first argument is "unset", it will unset the environment variables instead of setting them
+
 if test -f .env; then
     if [ "$1" = "unset" ]; then
         echo "Unsetting local test environment based on .env file"
