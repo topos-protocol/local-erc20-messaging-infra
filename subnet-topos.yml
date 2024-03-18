@@ -231,8 +231,14 @@ services:
       - topos-data:/data
       - ./node_config/node/sequencer-topos/config.toml:/data/node/sequencer-topos/config.toml
     depends_on:
+      topos-node-1:
+        condition: service_healthy
+      topos-node-2:
+        condition: service_healthy
+      topos-node-3:
+        condition: service_healthy
       topos-node-4:
-        condition: service_started
+        condition: service_healthy
       contracts-topos:
         condition: service_completed_successfully
     entrypoint: "bash -c"
