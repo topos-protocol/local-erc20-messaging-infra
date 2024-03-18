@@ -80,7 +80,7 @@ services:
         ./topos node status --node http://localhost:1340
         /data/polygon-edge status | grep 'Current Block Number (base 10) = .[0-9]*'
       interval: 5s
-      start_period: 1s
+      start_period: 10s
       retries: 10
     depends_on:
       topos-init:
