@@ -17,5 +17,5 @@ metrics-api-addr = "0.0.0.0:3030"
 minimum-tce-cluster-size = 3
 
 [tce.p2p]
-listen_addresses = ["/ip4/0.0.0.0/tcp/9090"]
-public_addresses = ["/dns4/topos-node-2/tcp/9090"]
+listen-addresses = ["/ip4/0.0.0.0/tcp/9090"]
+public-addresses = ["/dns4/topos-node-3/tcp/9090"]
