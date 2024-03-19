@@ -166,12 +166,16 @@ services:
       - incal-data:/data
       - ./node_config/node/sequencer-incal/config.toml:/tmp/node_config/node/sequencer-incal/config.toml
     depends_on:
+      topos-node-1:
+        condition: service_healthy
       topos-node-4:
         condition: service_healthy
       contracts-topos:
         condition: service_completed_successfully
       contracts-incal:
         condition: service_completed_successfully
+      incal-node-1:
+        condition: service_healthy
       incal-node-4:
         condition: service_healthy
     entrypoint: "bash -c"
